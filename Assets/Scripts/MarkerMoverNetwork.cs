@@ -7,7 +7,7 @@ using Mirror;
 // the return message (host to client) is handled via a NetworkTransform automatically
 public class MarkerMoverNetwork : NetworkBehaviour
 {
-    public Transform marker;
+    Transform marker;
     // Start is called before the first frame update
     void Start()
     {
@@ -45,7 +45,7 @@ public class MarkerMoverNetwork : NetworkBehaviour
         if(Input.GetMouseButtonDown(0))
         {
             RaycastHit hit;
-            if(Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit))
+            if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit))
             {
                 CmdSetMarker(hit.point);
             }
@@ -56,13 +56,14 @@ public class MarkerMoverNetwork : NetworkBehaviour
         GetComponent<Renderer>().material.color = col;
     }
 
-    void SetMarker(Vector3 pos)
-    {
-        marker.position = pos;
-    }
-
     [Command]
     void CmdSetMarker(Vector3 pos)
+    {
+        RpcMarker(pos);
+    }
+
+    [ClientRpc]
+    void RpcMarker(Vector3 pos)
     {
         marker.position = pos;
     }

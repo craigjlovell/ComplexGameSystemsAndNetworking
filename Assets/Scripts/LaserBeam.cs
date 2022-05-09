@@ -7,6 +7,10 @@ public class LaserBeam : NetworkBehaviour
 {
 
     public LineRenderer lineRenderer;
+    Animator animator;
+
+    public Bullet bulletPrefab;
+
     public float coolDown;
     public ParticleSystem fireFX;
     int index = 1;
@@ -14,6 +18,7 @@ public class LaserBeam : NetworkBehaviour
     // Use this for initialization
     void Start()
     {
+        animator = GetComponent<Animator>();
         // turn off the linerenderer
         ShowLaser(false);
         CharacterMovement cm = GetComponent<CharacterMovement>();
@@ -83,7 +88,21 @@ public class LaserBeam : NetworkBehaviour
     [ClientRpc]
     void RpcFire()
     {
-        DoLaser();
+        animator.SetTrigger("Fire");
+        //DoLaser();
+        Hit();
+    }
+
+    [Server]
+    public void Hit()
+    {
+        GameObject go = Instantiate(bulletPrefab.gameObject,
+            transform.position + Vector3.up + transform.forward,
+            Quaternion.LookRotation(transform.forward));
+        Bullet bullet = go.GetComponent<Bullet>();
+        bullet.velocity = transform.forward * 5;
+
+        NetworkServer.Spawn(bullet.gameObject);
     }
 
 }

@@ -3,7 +3,7 @@ using System.Collections;
 using Mirror;
 
 // a basic character movement script, for moving a character around in multiplayer with a Network transform
-public class CharacterMovement : NetworkBehaviour 
+public class CharacterMovement : NetworkBehaviour
 {
     public float MoveSpeed = 10.0f;
     public float RotateSpeed = 180.0f;
