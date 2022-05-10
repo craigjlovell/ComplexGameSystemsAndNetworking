@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Mirror;
 
 public class InvSlot : MonoBehaviour
 {
@@ -38,10 +39,9 @@ public class InvSlot : MonoBehaviour
 
         obj = GetComponentInChildren<GuiScale>();   
         grid = GetComponentInParent<GridLayoutGroup>();
-
         grid.constraintCount = (int)invSize.y;
         
-        for(int x = 1; x <= invSize.x; x++)
+        for (int x = 1; x <= invSize.x; x++)
         {
             for (int y = 1; y <= invSize.y; y++)
             {
@@ -157,8 +157,8 @@ public class InvSlot : MonoBehaviour
             inventorySizeChangable = !inventorySizeChangable;
     }
 
-    public void FirstInvCreation()
+    public void CmdFirstInvCreation()
     {
-
+        
     }
 }

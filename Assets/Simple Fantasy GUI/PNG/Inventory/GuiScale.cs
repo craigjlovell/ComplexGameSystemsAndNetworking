@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using System;
+using Mirror;
 
 public class GuiScale : MonoBehaviour
 {
