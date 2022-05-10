@@ -9,14 +9,14 @@ public class InvSlot : MonoBehaviour
 
     public Vector2 invSize;
 
-    [Range(1, 100)]
+    [Range(0, 100)]
     public int numOfSlots = 0;
     public Vector2 slotSize;
     public float editHeader;
 
     public RectOffset invPadding;
     public Vector2 invSpacing;
-
+    
     GridLayoutGroup grid;
     GuiScale obj;
 
@@ -25,8 +25,10 @@ public class InvSlot : MonoBehaviour
 
     public List<GameObject> invSlots = new List<GameObject>();
 
-    public bool vecSlot = false; // if changing 
-    public bool intSlot = false;
+    bool vecSlot = false; // if changing 
+    bool intSlot = false;
+
+    bool inventorySizeChangable = false;
 
     // Start is called before the first frame update
     void Start()
@@ -35,42 +37,54 @@ public class InvSlot : MonoBehaviour
         numOfSlots = (int)invSize.x * (int)invSize.y;
 
         obj = GetComponentInChildren<GuiScale>();   
-        grid = this.GetComponentInParent<GridLayoutGroup>();
-
+        grid = GetComponentInParent<GridLayoutGroup>();
 
         grid.constraintCount = (int)invSize.y;
-        grid.cellSize = slotSize;
-        grid.padding = invPadding;        
-        grid.spacing = invSpacing;
         
-
         for(int x = 1; x <= invSize.x; x++)
         {
             for (int y = 1; y <= invSize.y; y++)
             {
                 GameObject slot = Instantiate(prefab) as GameObject;
-                slot.transform.parent = this.transform;
+                slot.transform.parent = transform;
                 slot.name = "Slot " + "Row " + x + " Col " + y;
                 invSlots.Add(slot);
             }
         }
-       
     }
 
     private void Update()
     {
         obj.headerSize = editHeader;
 
-        if (invSize.x > invSizeLastFrame.x || invSize.y > invSizeLastFrame.y)
+        grid.cellSize = slotSize;
+
+        RectOffset temp = new RectOffset();
+
+        temp.left = invPadding.left;
+        temp.right = invPadding.right;
+        temp.top = invPadding.top;
+        temp.bottom = invPadding.bottom;
+
+        grid.padding = temp;
+
+        grid.spacing = invSpacing;
+
+        if (inventorySizeChangable)
         {
-            vecSlot = true;
+            if (invSize != invSizeLastFrame)
+                vecSlot = true;
+            else
+                vecSlot = false;
+
+            if (numOfSlots != numOfSlotsLastFrame)
+                intSlot = true;
+            else
+                intSlot = false;
         }
-
-
 
         if (vecSlot == true)
         {
-            intSlot = false;
             if (invSize.x > invSizeLastFrame.x || invSize.y > invSizeLastFrame.y)
             {
                 int tempNum = numOfSlots;
@@ -83,6 +97,7 @@ public class InvSlot : MonoBehaviour
                     slot.transform.parent = this.transform;
                     invSlots.Add(slot);
                 }
+                numOfSlots = invSlots.Count;
                 grid.constraintCount = (int)invSize.y;
             }
 
@@ -99,13 +114,14 @@ public class InvSlot : MonoBehaviour
                     invSlots.Remove(toRemove);
                     Destroy(toRemove);
                 }
+                numOfSlots = invSlots.Count;
                 grid.constraintCount = (int)invSize.y;
             }
         }
 
         if (intSlot == true)
         {
-            vecSlot = false;
+
             if (numOfSlotsLastFrame < numOfSlots)
             {
                 int tempNum = numOfSlots - numOfSlotsLastFrame;
@@ -116,6 +132,7 @@ public class InvSlot : MonoBehaviour
                     slot.transform.parent = this.transform;
                     invSlots.Add(slot);
                 }
+                numOfSlots = invSlots.Count;
             }
 
             if (numOfSlotsLastFrame > numOfSlots)
@@ -129,11 +146,15 @@ public class InvSlot : MonoBehaviour
                     invSlots.Remove(toRemove);
                     Destroy(toRemove);
                 }
+                numOfSlots = invSlots.Count;
             }
         }
 
         numOfSlotsLastFrame = numOfSlots;
         invSizeLastFrame = invSize;
+
+        if (!inventorySizeChangable)
+            inventorySizeChangable = !inventorySizeChangable;
     }
 
     public void FirstInvCreation()
