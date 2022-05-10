@@ -8,6 +8,7 @@ public class InvSlot : MonoBehaviour
     public GameObject prefab;
 
     public Vector2 invSize;
+    public int numOfSlots = 0;
     public Vector2 slotSize;
     public float sizeHeader;
 
@@ -19,14 +20,22 @@ public class InvSlot : MonoBehaviour
     GuiScale obj;
     bool hasUpdated = false;
 
+    Vector2 invSizeLastFrame = new Vector2(0, 0);
+
+    public List<GameObject> invSlots = new List<GameObject>();
+
     // Start is called before the first frame update
     void Start()
     {
+        invSizeLastFrame = invSize;
+        numOfSlots = (int)invSize.x * (int)invSize.y;
+
         grid = this.GetComponentInParent<GridLayoutGroup>();
+
         grid.constraintCount = (int)invSize.y;
         grid.cellSize = slotSize;
         grid.padding = invPadding;
-        obj.headerSize = sizeHeader;
+        //sizeHeader = obj.headerSize;
 
         grid.spacing = invSpacing;
 
@@ -37,19 +46,49 @@ public class InvSlot : MonoBehaviour
                 GameObject slot = Instantiate(prefab) as GameObject;
                 slot.transform.parent = this.transform;
                 slot.name = "Slot " + "Row " + x + " Col " + y;
+                invSlots.Add(slot);
             }
         }
-
-        obj = this.transform.GetChild(0).GetComponent<GuiScale>();
     }
 
-    // Update is called once per frame
-    void LateUpdate()
+    private void Update()
     {
-        if (!hasUpdated)
+        if (invSize.x > invSizeLastFrame.x || invSize.y > invSizeLastFrame.y)
         {
-            obj.SetSize();
-            hasUpdated = true;
+            int tempNum = numOfSlots;
+            numOfSlots = (int)invSize.x * (int)invSize.y;
+            tempNum = numOfSlots - tempNum;
+
+            for (int x = 1; x <= tempNum; x++)
+            {
+                GameObject slot = Instantiate(prefab) as GameObject;
+                slot.transform.parent = this.transform;
+                invSlots.Add(slot);
+            }
+            grid.constraintCount = (int)invSize.y;
         }
+
+        if (invSize.x < invSizeLastFrame.x || invSize.y < invSizeLastFrame.y)
+        {
+            int tempNum = numOfSlots;
+            numOfSlots = (int)invSize.x * (int)invSize.y;
+            tempNum = tempNum - numOfSlots;
+
+            for (int x = 1; x <= tempNum; x++)
+            {
+                GameObject toRemove = invSlots[invSlots.Count - 1];
+
+                invSlots.Remove(toRemove);
+                Destroy(toRemove);
+            }
+            grid.constraintCount = (int)invSize.y;
+        }
+
+        invSizeLastFrame = invSize;
+    }
+
+    public void FirstInvCreation()
+    {
+
     }
 }
