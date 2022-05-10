@@ -9,11 +9,15 @@ public class InvSlot : MonoBehaviour
 
     public Vector2 invSize;
     public Vector2 slotSize;
+    public float sizeHeader;
 
     public RectOffset invPadding;
     public Vector2 invSpacing;
 
     GridLayoutGroup grid;
+
+    GuiScale obj;
+    bool hasUpdated = false;
 
     // Start is called before the first frame update
     void Start()
@@ -22,6 +26,7 @@ public class InvSlot : MonoBehaviour
         grid.constraintCount = (int)invSize.y;
         grid.cellSize = slotSize;
         grid.padding = invPadding;
+        obj.headerSize = sizeHeader;
 
         grid.spacing = invSpacing;
 
@@ -31,17 +36,20 @@ public class InvSlot : MonoBehaviour
             {
                 GameObject slot = Instantiate(prefab) as GameObject;
                 slot.transform.parent = this.transform;
-                slot.name = "slot" + x + "_" + y;
-                
+                slot.name = "Slot " + "Row " + x + " Col " + y;
             }
         }
 
-
+        obj = this.transform.GetChild(0).GetComponent<GuiScale>();
     }
 
     // Update is called once per frame
-    void Update()
+    void LateUpdate()
     {
-        
+        if (!hasUpdated)
+        {
+            obj.SetSize();
+            hasUpdated = true;
+        }
     }
 }
