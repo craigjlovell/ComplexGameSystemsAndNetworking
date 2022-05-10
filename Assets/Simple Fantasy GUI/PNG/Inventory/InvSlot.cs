@@ -10,15 +10,13 @@ public class InvSlot : MonoBehaviour
     public Vector2 invSize;
     public int numOfSlots = 0;
     public Vector2 slotSize;
-    public float sizeHeader;
+    public float editHeader;
 
     public RectOffset invPadding;
     public Vector2 invSpacing;
 
     GridLayoutGroup grid;
-
     GuiScale obj;
-    bool hasUpdated = false;
 
     Vector2 invSizeLastFrame = new Vector2(0, 0);
 
@@ -30,14 +28,15 @@ public class InvSlot : MonoBehaviour
         invSizeLastFrame = invSize;
         numOfSlots = (int)invSize.x * (int)invSize.y;
 
+        obj = GetComponentInChildren<GuiScale>();   
         grid = this.GetComponentInParent<GridLayoutGroup>();
+
 
         grid.constraintCount = (int)invSize.y;
         grid.cellSize = slotSize;
-        grid.padding = invPadding;
-        //sizeHeader = obj.headerSize;
-
+        grid.padding = invPadding;        
         grid.spacing = invSpacing;
+        
 
         for(int x = 1; x <= invSize.x; x++)
         {
@@ -49,10 +48,13 @@ public class InvSlot : MonoBehaviour
                 invSlots.Add(slot);
             }
         }
+       
     }
 
     private void Update()
     {
+        obj.headerSize = editHeader;
+
         if (invSize.x > invSizeLastFrame.x || invSize.y > invSizeLastFrame.y)
         {
             int tempNum = numOfSlots;
