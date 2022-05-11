@@ -7,8 +7,6 @@ using System;
 
 public class InvSlot : NetworkBehaviour
 {
-    public InventoryItemData itemObject;
-    public int amount;
 
     public GameObject prefab;
 
@@ -194,54 +192,16 @@ public class InvSlot : NetworkBehaviour
         
     }
 
-    public InvSlot(InventoryItemData a_item, int a_amount)
-    {
-        itemObject = a_item;
-        amount = a_amount;
-    }
-
-    public void AddAmount(int a_value)
-    {
-        amount += a_value;
-    }
+    //public InvSlot(InventoryItemData a_item, int a_amount)
+    //{
+    //    itemObject = a_item;
+    //    amount = a_amount;
+    //}
+    //
+    //public void AddAmount(int a_value)
+    //{
+    //    amount += a_value;
+    //}
 }
 
-//[Serializable]
-//public class AddItemToInventorySlot
-//{
-//    public InventoryItemData itemObject;
-//    public int amount;
-//
-//    public AddItemToInventorySlot(InventoryItemData a_item, int a_amount)
-//    {
-//        itemObject = a_item;
-//        amount = a_amount;
-//    }
-//    public void AddAmount(int a_value)
-//    {
-//        amount += a_value;
-//    }
-//}
 
-[CreateAssetMenu(fileName = "New Inv", menuName = "Inventory System/Inventory")]
-public class InvObject : ScriptableObject
-{
-    public List<InvSlot> invItems = new List<InvSlot>();
-    public void AddItem(InventoryItemData a_item, int a_amount)
-    {
-        bool hasItem = false;
-        for (int i = 0; i < invItems.Count; i++)
-        {
-            if (invItems[i].itemObject == a_item)
-            {
-                invItems[i].AddAmount(a_amount);
-                hasItem = true;
-                break;
-            }
-        }
-        if(!hasItem)
-        {
-            invItems.Add(new InvSlot(a_item, a_amount));
-        }
-    }
-}
