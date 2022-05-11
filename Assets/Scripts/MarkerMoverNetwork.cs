@@ -7,7 +7,7 @@ using Mirror;
 // the return message (host to client) is handled via a NetworkTransform automatically
 public class MarkerMoverNetwork : NetworkBehaviour
 {
-    Transform marker;
+    public Transform marker;
     // Start is called before the first frame update
     void Start()
     {
@@ -53,7 +53,8 @@ public class MarkerMoverNetwork : NetworkBehaviour
     }
     void SetColor(Color col)
     {
-        GetComponent<Renderer>().material.color = col;
+        //GetComponent<Renderer>().material.color = col;
+        marker.GetComponent<Renderer>().material.color = col;
     }
 
     [Command]

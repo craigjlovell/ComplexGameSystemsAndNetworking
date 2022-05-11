@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Mirror;
 
-public class InvSlot : MonoBehaviour
+public class InvSlot : NetworkBehaviour
 {
     public GameObject prefab;
 
@@ -32,15 +32,23 @@ public class InvSlot : MonoBehaviour
     bool inventorySizeChangable = false;
 
     // Start is called before the first frame update
+    
     void Start()
     {
         invSizeLastFrame = invSize;
         numOfSlots = (int)invSize.x * (int)invSize.y;
 
-        obj = GetComponentInChildren<GuiScale>();   
+        obj = transform.parent.GetComponentInChildren<GuiScale>();   
+        //obj = GetComponentInChildren<GuiScale>();   
         grid = GetComponentInParent<GridLayoutGroup>();
         grid.constraintCount = (int)invSize.y;
         
+        InitialiseSlotsOnStart();
+    }
+
+    [Server]
+    void InitialiseSlotsOnStart()
+    {
         for (int x = 1; x <= invSize.x; x++)
         {
             for (int y = 1; y <= invSize.y; y++)
@@ -53,7 +61,7 @@ public class InvSlot : MonoBehaviour
         }
     }
 
-    private void Update()
+    void Update()
     {
         obj.headerSize = editHeader;
 
@@ -85,68 +93,28 @@ public class InvSlot : MonoBehaviour
 
         if (vecSlot == true)
         {
-            if (invSize.x > invSizeLastFrame.x || invSize.y > invSizeLastFrame.y)
+            if (invSize.x > invSizeLastFrame.x || invSize.y > invSizeLastFrame.y && isClient)
             {
-                int tempNum = numOfSlots;
-                numOfSlots = (int)invSize.x * (int)invSize.y;
-                tempNum = numOfSlots - tempNum;
-
-                for (int x = 1; x <= tempNum; x++)
-                {
-                    GameObject slot = Instantiate(prefab) as GameObject;
-                    slot.transform.parent = this.transform;
-                    invSlots.Add(slot);
-                }
-                numOfSlots = invSlots.Count;
-                grid.constraintCount = (int)invSize.y;
+                AddInventorySlotsVector();
             }
 
-            if (invSize.x < invSizeLastFrame.x || invSize.y < invSizeLastFrame.y)
+            if (invSize.x < invSizeLastFrame.x || invSize.y < invSizeLastFrame.y && isClient)
             {
-                int tempNum = numOfSlots;
-                numOfSlots = (int)invSize.x * (int)invSize.y;
-                tempNum = tempNum - numOfSlots;
-
-                for (int x = 1; x <= tempNum; x++)
-                {
-                    GameObject toRemove = invSlots[invSlots.Count - 1];
-
-                    invSlots.Remove(toRemove);
-                    Destroy(toRemove);
-                }
-                numOfSlots = invSlots.Count;
-                grid.constraintCount = (int)invSize.y;
+                RemoveInventorySlotsVector();
             }
         }
 
         if (intSlot == true)
         {
 
-            if (numOfSlotsLastFrame < numOfSlots)
+            if (numOfSlotsLastFrame < numOfSlots && isClient)
             {
-                int tempNum = numOfSlots - numOfSlotsLastFrame;
-
-                for (int x = 1; x <= tempNum; x++)
-                {
-                    GameObject slot = Instantiate(prefab) as GameObject;
-                    slot.transform.parent = this.transform;
-                    invSlots.Add(slot);
-                }
-                numOfSlots = invSlots.Count;
+                AddInventorySlotsInt();
             }
 
-            if (numOfSlotsLastFrame > numOfSlots)
+            if (numOfSlotsLastFrame > numOfSlots && isClient)
             {
-                int tempNum = numOfSlotsLastFrame - numOfSlots;
-
-                for (int x = 1; x <= tempNum; x++)
-                {
-                    GameObject toRemove = invSlots[invSlots.Count - 1];
-
-                    invSlots.Remove(toRemove);
-                    Destroy(toRemove);
-                }
-                numOfSlots = invSlots.Count;
+                RemoveInventorySlotsInt();
             }
         }
 
@@ -155,6 +123,66 @@ public class InvSlot : MonoBehaviour
 
         if (!inventorySizeChangable)
             inventorySizeChangable = !inventorySizeChangable;
+    }
+
+    void AddInventorySlotsVector()
+    {
+        int tempNum = numOfSlots;
+        numOfSlots = (int)invSize.x * (int)invSize.y;
+        tempNum = numOfSlots - tempNum;
+
+        for (int x = 1; x <= tempNum; x++)
+        {
+            GameObject slot = Instantiate(prefab) as GameObject;
+            slot.transform.parent = this.transform;
+            invSlots.Add(slot);
+        }
+        numOfSlots = invSlots.Count;
+        grid.constraintCount = (int)invSize.y;
+    }
+
+    void AddInventorySlotsInt()
+    {
+        int tempNum = numOfSlots - numOfSlotsLastFrame;
+
+        for (int x = 1; x <= tempNum; x++)
+        {
+            GameObject slot = Instantiate(prefab) as GameObject;
+            slot.transform.parent = this.transform;
+            invSlots.Add(slot);
+        }
+        numOfSlots = invSlots.Count;
+    }
+
+    void RemoveInventorySlotsVector()
+    {
+        int tempNum = numOfSlots;
+        numOfSlots = (int)invSize.x * (int)invSize.y;
+        tempNum = tempNum - numOfSlots;
+
+        for (int x = 1; x <= tempNum; x++)
+        {
+            GameObject toRemove = invSlots[invSlots.Count - 1];
+
+            invSlots.Remove(toRemove);
+            Destroy(toRemove);
+        }
+        numOfSlots = invSlots.Count;
+        grid.constraintCount = (int)invSize.y;
+    }
+
+    void RemoveInventorySlotsInt()
+    {
+        int tempNum = numOfSlotsLastFrame - numOfSlots;
+
+        for (int x = 1; x <= tempNum; x++)
+        {
+            GameObject toRemove = invSlots[invSlots.Count - 1];
+
+            invSlots.Remove(toRemove);
+            Destroy(toRemove);
+        }
+        numOfSlots = invSlots.Count;
     }
 
     public void CmdFirstInvCreation()
