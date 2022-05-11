@@ -8,6 +8,8 @@ public class PlayerController : NetworkBehaviour
     Animator animator;
     CharacterController cc;
 
+    public InvObject inventory;
+
     public float MoveSpeed = 10.0f;
     public float RotateSpeed = 180.0f;
     public int index = 1;
@@ -15,7 +17,7 @@ public class PlayerController : NetworkBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        animator = GetComponent<Animator>();    
+        animator = GetComponent<Animator>();
         cc = GetComponent<CharacterController>();
     }
 
@@ -32,4 +34,14 @@ public class PlayerController : NetworkBehaviour
         animator.SetFloat("Turn", Input.GetAxis("Horizontal"));
     }
 
+    public void OnControllerColliderHit(ControllerColliderHit hit)
+    {
+         var item = hit.collider.GetComponent<Item>();
+        if (item != null)
+        {
+            inventory.AddItem(item.item, 1);
+            Destroy(hit.gameObject);
+        }
+
+    }
 }
