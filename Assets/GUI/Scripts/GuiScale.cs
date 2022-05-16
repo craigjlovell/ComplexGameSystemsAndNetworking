@@ -19,7 +19,7 @@ public class GuiScale : NetworkBehaviour
 
     public float lifetime;
 
-    private void Awake()
+    public void Awake()
     {
         thisRect.anchoredPosition = Vector2.zero;
     }

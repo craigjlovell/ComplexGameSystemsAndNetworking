@@ -8,7 +8,7 @@ public class PlayerController : NetworkBehaviour
     Animator animator;
     CharacterController cc;
 
-    public InvObject inventory;
+    InvManager inventory;
 
     public float MoveSpeed = 10.0f;
     public float RotateSpeed = 180.0f;
@@ -39,13 +39,9 @@ public class PlayerController : NetworkBehaviour
          var item = hit.collider.GetComponent<Item>();
         if (item != null)
         {
-            inventory.AddItem(item.item, 1);
+            inventory.Add(item.item);
             Destroy(hit.gameObject);
         }
 
-    }
-    private void OnApplicationQuit()
-    {
-        inventory.container.Clear();
     }
 }
