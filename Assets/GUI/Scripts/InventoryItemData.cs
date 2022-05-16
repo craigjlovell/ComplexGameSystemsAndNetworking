@@ -16,4 +16,9 @@ public abstract class InventoryItemData : ScriptableObject
     public ItemType itemType;
     public GameObject item;
     public Sprite itemImage;
+
+    public bool isConsumable;
+    public bool isStackable;
+
 }
+

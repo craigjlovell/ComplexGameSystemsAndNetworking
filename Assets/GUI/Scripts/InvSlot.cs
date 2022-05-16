@@ -19,7 +19,7 @@ public class InvSlot : NetworkBehaviour
 
     public RectOffset invPadding;
     public Vector2 invSpacing;
-    
+
     GridLayoutGroup grid;
     GuiScale obj;
 
@@ -40,7 +40,7 @@ public class InvSlot : NetworkBehaviour
         invSizeLastFrame = invSize;
         numOfSlots = (int)invSize.x * (int)invSize.y;
 
-        obj = transform.parent.GetComponentInChildren<GuiScale>();   
+        obj = transform.GetComponentInChildren<GuiScale>();   
         //obj = GetComponentInChildren<GuiScale>();   
         grid = GetComponentInParent<GridLayoutGroup>();
         grid.constraintCount = (int)invSize.y;
@@ -48,7 +48,7 @@ public class InvSlot : NetworkBehaviour
         InitialiseSlotsOnStart();
     }
 
-    [Server]
+    
     void InitialiseSlotsOnStart()
     {
         for (int x = 1; x <= invSize.x; x++)
@@ -65,6 +65,7 @@ public class InvSlot : NetworkBehaviour
 
     void Update()
     {
+        //CmdUpdate();
         obj.headerSize = editHeader;
 
         grid.cellSize = slotSize;
@@ -154,6 +155,7 @@ public class InvSlot : NetworkBehaviour
             invSlots.Add(slot);
         }
         numOfSlots = invSlots.Count;
+        grid.constraintCount = (int)invSize.y;
     }
 
     void RemoveInventorySlotsVector()
@@ -185,12 +187,39 @@ public class InvSlot : NetworkBehaviour
             Destroy(toRemove);
         }
         numOfSlots = invSlots.Count;
+        grid.constraintCount = (int)invSize.y;
     }
-
-    public void CmdFirstInvCreation()
-    {
-        
-    }
+    
+    //[Command]
+    //void CmdUpdate()
+    //{
+    //    RpcUpdate();
+    //}
+    //
+    //[Client]
+    //void RpcUpdate()
+    //{
+    //    ServerUpdate();
+    //}
+    //
+    //[Server]
+    //void ServerUpdate()
+    //{
+    //    obj.headerSize = editHeader;
+    //
+    //    grid.cellSize = slotSize;
+    //
+    //    RectOffset temp = new RectOffset();
+    //
+    //    temp.left = invPadding.left;
+    //    temp.right = invPadding.right;
+    //    temp.top = invPadding.top;
+    //    temp.bottom = invPadding.bottom;
+    //
+    //    grid.padding = temp;
+    //
+    //    grid.spacing = invSpacing;
+    //}
 
     //public InvSlot(InventoryItemData a_item, int a_amount)
     //{

@@ -44,4 +44,8 @@ public class PlayerController : NetworkBehaviour
         }
 
     }
+    private void OnApplicationQuit()
+    {
+        inventory.container.Clear();
+    }
 }
