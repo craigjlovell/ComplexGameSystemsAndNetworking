@@ -19,11 +19,13 @@ public class GuiScale : NetworkBehaviour
 
     public float lifetime;
 
+    [Client]
     public void Awake()
     {
         thisRect.anchoredPosition = Vector2.zero;
     }
 
+    [Client]
     void Start()
     {        
         parentRect = transform.parent.GetComponentInParent<InvSlot>().GetComponent<RectTransform>();
@@ -32,8 +34,7 @@ public class GuiScale : NetworkBehaviour
 
     // Update is called once per frame
     void Update()
-    {
-        //
+    {        
         Debug.Log(parentRect.GetComponent<RectTransform>().rect.size.x);
 
         RpcResise();
