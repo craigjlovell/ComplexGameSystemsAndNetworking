@@ -7,6 +7,7 @@ using Mirror;
 public class InvManager : NetworkBehaviour
 {
     [SerializeField] private static InvManager a_instance;
+    //[SerializeField] private static InvManager a_instance;
 
     [SerializeField] private GameObject slotHolder;
     [SerializeField] private GameObject Header;
