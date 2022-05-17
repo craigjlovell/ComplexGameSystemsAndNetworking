@@ -20,9 +20,9 @@ public abstract class InventoryItemData : ScriptableObject
     public bool isConsumable;
     public bool isStackable;
 
-    public abstract InvItemBlocks GetBlock();
-    public abstract InvItem GetDefault();
-    public abstract InvItemFood GetFood();
-    public abstract InvItemEquipment GetEquipment();
+    //public abstract InvItemBlocks GetBlock();
+    //public abstract InvItem GetDefault();
+    //public abstract InvItemFood GetFood();
+    //public abstract InvItemEquipment GetEquipment();
 }
 

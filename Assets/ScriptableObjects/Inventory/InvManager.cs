@@ -54,14 +54,16 @@ public class InvManager : NetworkBehaviour
     }
     void Update()
     {
-        if(!isLocalPlayer)
+        RefreshUI();
+
+        if (!isLocalPlayer)
             return;
 
         CmdRefreshUI();
         
         CmdAdd();
         CmdRemove();
-        //RefreshUI();
+        
     }
 
     [Server]

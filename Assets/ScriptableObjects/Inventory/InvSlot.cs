@@ -7,7 +7,7 @@ using System;
 
 public class InvSlot : NetworkBehaviour
 {
-
+    [SerializeField] private static InvSlot a_instance;
     public GameObject prefab;
 
     public Vector2 invSize;
@@ -34,8 +34,25 @@ public class InvSlot : NetworkBehaviour
     bool inventorySizeChangable = false;
 
     // Start is called before the first frame update
-    
 
+    public static InvSlot Instance
+    {
+        get
+        {
+            if (a_instance == null)
+            {
+                GameObject go = new GameObject("InventoryGUI");
+                a_instance = go.AddComponent<InvSlot>();
+            }
+
+            return a_instance;
+        }
+    }
+
+    void Awake()
+    {
+        a_instance = this;
+    }
     void Start()
     {
         invSizeLastFrame = invSize;
