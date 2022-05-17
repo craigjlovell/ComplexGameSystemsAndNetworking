@@ -22,14 +22,15 @@ public class GuiScale : NetworkBehaviour
     [Client]
     public void Awake()
     {
-        thisRect.anchoredPosition = Vector2.zero;
+        
     }
 
     [Client]
     void Start()
     {        
         parentRect = transform.parent.GetComponentInParent<InvSlot>().GetComponent<RectTransform>();
-        thisRect = GetComponent<RectTransform>();        
+        thisRect = GetComponent<RectTransform>();
+        thisRect.anchoredPosition = Vector2.zero;
     }
 
     

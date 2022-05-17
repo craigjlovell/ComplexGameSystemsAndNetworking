@@ -47,7 +47,7 @@ public class InvManager :  NetworkBehaviour
     [Client]
     public void RefreshUI()
     {
-        for(int i = 1; i < slots.Length - 1; i++)
+        for(int i = 0; i < slots.Length - 1; i++)
         {
             try
             {
