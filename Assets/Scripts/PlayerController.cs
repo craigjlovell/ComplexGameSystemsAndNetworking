@@ -9,7 +9,6 @@ public class PlayerController : NetworkBehaviour
     CharacterController cc;
 
     InvManager manager;
-    InventoryItemData inventory;
 
     public float MoveSpeed = 10.0f;
     public float RotateSpeed = 180.0f;
@@ -20,14 +19,15 @@ public class PlayerController : NetworkBehaviour
     {
         animator = GetComponent<Animator>();
         cc = GetComponent<CharacterController>();
-        manager = GetComponent<InvManager>();
     }
 
     // Update is called once per frame
     void Update()
     {
+        CmdTrigger();
         if (!isLocalPlayer)
             return;
+        
 
         float fwd = Input.GetAxis("Vertical");
         animator.SetFloat("Forward", Mathf.Abs(fwd));
@@ -36,14 +36,26 @@ public class PlayerController : NetworkBehaviour
         animator.SetFloat("Turn", Input.GetAxis("Horizontal"));
     }
 
-    [Client]
-    private void OnTriggerEnter(Collider other)
+    [Command]
+    public void CmdTrigger()
     {
-        Item item = other.GetComponent<Item>();
-        manager.items.Add(item.item);
-        manager.RefreshUI();
-    
-        Destroy(other.gameObject);
-    
+        RpcTrigger();
+    }
+
+    [ClientRpc]
+    public void RpcTrigger()
+    {
+        OnTriggerEnter(cc);
+    }
+
+    public void OnTriggerEnter(Collider other)
+    {
+        InventoryItemData item = other.GetComponent<InventoryItemData>();
+        if (item != null)
+        {
+            manager.items.Add(item);
+            manager.RefreshUI();
+            Destroy(other.gameObject);
+        }            
     }
 }

@@ -19,13 +19,7 @@ public class GuiScale : NetworkBehaviour
 
     public float lifetime;
 
-    [Client]
-    public void Awake()
-    {
-        
-    }
-
-    [Client]
+    
     void Start()
     {        
         parentRect = transform.parent.GetComponentInParent<InvSlot>().GetComponent<RectTransform>();
@@ -43,13 +37,13 @@ public class GuiScale : NetworkBehaviour
     }
 
     
-    [Client]
+    
     void RpcResise()
     {
         ReSize();
     }
 
-    [Client]
+    
     public void ReSize()
     {
         transform.position += velocity * Time.deltaTime;
