@@ -8,8 +8,8 @@ public class PlayerController : NetworkBehaviour
     Animator animator;
     CharacterController cc;
 
-    InventoryItemData inventory;
     InvManager manager;
+    InventoryItemData inventory;
 
     public float MoveSpeed = 10.0f;
     public float RotateSpeed = 180.0f;
@@ -20,6 +20,7 @@ public class PlayerController : NetworkBehaviour
     {
         animator = GetComponent<Animator>();
         cc = GetComponent<CharacterController>();
+        manager = GetComponent<InvManager>();
     }
 
     // Update is called once per frame
@@ -35,16 +36,14 @@ public class PlayerController : NetworkBehaviour
         animator.SetFloat("Turn", Input.GetAxis("Horizontal"));
     }
 
+    [Client]
     private void OnTriggerEnter(Collider other)
     {
-        var item = other.GetComponent<Item>();
-        if (item != null)
-        {
-            if(inventory.itemType == ItemType.DEFAULT || inventory.itemType == ItemType.FOOD || inventory.itemType == ItemType.EQUIPMENT || inventory.itemType == ItemType.BLOCKS)
-            {
-                manager.Add(item.item);
-            }
-            Destroy(other.gameObject);
-        }
+        Item item = other.GetComponent<Item>();
+        manager.items.Add(item.item);
+        manager.RefreshUI();
+    
+        Destroy(other.gameObject);
+    
     }
 }

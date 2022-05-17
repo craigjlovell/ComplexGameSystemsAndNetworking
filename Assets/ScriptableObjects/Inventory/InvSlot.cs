@@ -35,13 +35,14 @@ public class InvSlot : NetworkBehaviour
 
     // Start is called before the first frame update
     
+
     void Start()
     {
         invSizeLastFrame = invSize;
         numOfSlots = (int)invSize.x * (int)invSize.y;
 
-        obj = transform.GetComponentInChildren<GuiScale>();   
-        //obj = GetComponentInChildren<GuiScale>();   
+        obj = transform.GetComponentInChildren<GuiScale>();
+
         grid = GetComponentInParent<GridLayoutGroup>();
         grid.constraintCount = (int)invSize.y;
         

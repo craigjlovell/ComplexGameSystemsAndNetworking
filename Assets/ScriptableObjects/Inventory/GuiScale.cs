@@ -32,13 +32,13 @@ public class GuiScale : NetworkBehaviour
         thisRect = GetComponent<RectTransform>();        
     }
 
+    
     // Update is called once per frame
     void Update()
-    {        
+    {
         Debug.Log(parentRect.GetComponent<RectTransform>().rect.size.x);
 
         RpcResise();
-
     }
 
     

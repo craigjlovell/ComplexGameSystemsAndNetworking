@@ -24,6 +24,5 @@ public abstract class InventoryItemData : ScriptableObject
     public abstract InvItem GetDefault();
     public abstract InvItemFood GetFood();
     public abstract InvItemEquipment GetEquipment();
-
 }
 
