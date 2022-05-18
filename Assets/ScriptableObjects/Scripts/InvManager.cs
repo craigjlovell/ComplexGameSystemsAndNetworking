@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Mirror;
+using System;
 
 public class InvManager : NetworkBehaviour
 {
@@ -11,8 +12,8 @@ public class InvManager : NetworkBehaviour
 
     [SerializeField] public GameObject slotHolder;
     [SerializeField] public GameObject Header;
-    [SerializeField] public InventoryItemData itemToAdd;
-    [SerializeField] public InventoryItemData itemToRemove;
+    [SerializeField] private InventoryItemData itemToAdd;
+    [SerializeField] private InventoryItemData itemToRemove;
 
     public List<InventoryItemData> items = new List<InventoryItemData>();
 
@@ -25,89 +26,108 @@ public class InvManager : NetworkBehaviour
 
         manager = gameObject.GetComponent<InvManager>();
         slotManager = gameObject.GetComponentInChildren<InvSlot>();
-        slots = new GameObject[slotHolder.transform.childCount];
+        
 
-        RefreshUI();
-        Add(itemToAdd);
-        Remove(itemToRemove);
+        
     }
 
     void Start()
     {
+        //var count = 0;
+        //foreach (var slotHolderSlot in slotHolder.transform)
+        //{
+        //    count++;
+        //    Debug.Log("Slots: " + count);
+        //}
+        if(!isLocalPlayer)
+            return;
+        slots = new GameObject[slotHolder.transform.childCount];
+        Header.transform.SetAsLastSibling();
+        for (int i = 0; i < slotHolder.transform.childCount; i++)
+        {
+            slots[i] = slotHolder.transform.GetChild(i).gameObject;
+        }
+        RefreshUI();
+        Add(itemToAdd);
+        Remove(itemToRemove);
 
     }
 
     void Update()
     {        
         if (!isLocalPlayer)
-            return;
-       
+            return; 
+        CmdRefreshUI();
     }
 
+    [Server]
     public void RefreshUI()
     {
-        for(int i = 0; i < slots.Length - 1; i++)
+        for (int i = 0; i < slots.Length - 1; i++)
         {
             try
             {
                 slots[i].transform.GetChild(0).GetComponent<Image>().enabled = true;
                 slots[i].transform.GetChild(0).GetComponent<Image>().sprite = items[i].itemImage;
-                
+
             }
-            catch 
+            catch
             {
                 slots[i].transform.GetChild(0).GetComponent<Image>().sprite = null;
                 slots[i].transform.GetChild(0).GetComponent<Image>().enabled = false;
             }
+
         }
     }
 
-    public void Add(InventoryItemData item)
+    [Server]
+    void Add(InventoryItemData item)
     {
         items.Add(item);
         RefreshUI();
     }
 
-    public void Remove(InventoryItemData item)
+    [Server]
+    void Remove(InventoryItemData item)
     {
         items.Remove(item);
         RefreshUI();
     }
 
-    //[Command]
-    //public void CmdAdd()
-    //{
-    //    RpcAdd();
-    //}
-    //
-    //[Command]
-    //public void CmdRemove()
-    //{
-    //    RpcRemove();
-    //}
-    //
-    //[Command]
-    //public void CmdRefreshUI()
-    //{
-    //    RpcRefreshUI();
-    //}
-    //
-    //[ClientRpc]
-    //public void RpcAdd()
-    //{
-    //    Add(itemToAdd);
-    //}
-    //
-    //[ClientRpc]
-    //public void RpcRemove()
-    //{
-    //    Remove(itemToRemove);
-    //}
-    //
-    //[ClientRpc]
-    //public void RpcRefreshUI()
-    //{
-    //    RefreshUI();
-    //}
+    [Command]
+    public void CmdAdd()
+    {
+        RpcAdd();
+    }
 
+    [Command]
+    public void CmdRemove()
+    {
+        RpcRemove();
+    }
+        
+    [Command]
+    public void CmdRefreshUI()
+    {
+        RpcRefreshUI();
+    }
+    
+    [ClientRpc]
+    public void RpcAdd()
+    {
+        Add(itemToAdd);
+    }
+    
+    [ClientRpc]
+    public void RpcRemove()
+    {
+        Remove(itemToRemove);
+    }
+    
+    [ClientRpc]
+    public void RpcRefreshUI()
+    {
+        RefreshUI();
+    }
+    
 }

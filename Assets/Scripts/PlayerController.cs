@@ -26,13 +26,7 @@ public class PlayerController : NetworkBehaviour
             return;
         
         manager = gameObject.GetComponent<InvManager>();
-        slotManager = gameObject.GetComponentInChildren<InvSlot>();
-        manager.Header.transform.SetAsLastSibling();
-
-        for (int i = 0; i < manager.slotHolder.transform.childCount; i++)
-        {
-            manager.slots[i] = manager.slotHolder.transform.GetChild(i).gameObject;
-        }
+        slotManager = gameObject.GetComponentInChildren<InvSlot>();               
     }
 
     void Start()
@@ -83,7 +77,7 @@ public class PlayerController : NetworkBehaviour
         ItemLinker item = other.GetComponent<ItemLinker>();
         if (item != null)
         {
-            manager.items.Add(item.itemLinker);
+            manager.manager.items.Add(item.itemLinker);
             Destroy(other.gameObject);
         }            
     }

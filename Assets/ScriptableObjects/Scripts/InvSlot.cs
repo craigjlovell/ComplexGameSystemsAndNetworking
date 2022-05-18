@@ -52,9 +52,7 @@ public class InvSlot : MonoBehaviour
     void Awake()
     {
         a_instance = this;
-    }
-    void Start()
-    {
+
         invSizeLastFrame = invSize;
         numOfSlots = (int)invSize.x * (int)invSize.y;
 
@@ -62,8 +60,12 @@ public class InvSlot : MonoBehaviour
 
         grid = GetComponentInParent<GridLayoutGroup>();
         grid.constraintCount = (int)invSize.y;
-        
+
         InitialiseSlotsOnStart();
+    }
+    void Start()
+    {
+        
     }
 
     
