@@ -5,9 +5,8 @@ using Mirror;
 
 public class PlayerController : NetworkBehaviour
 {
-    public GameObject inv;
-    public GameObject slot;
-
+    //public GameObject inv;
+    //public GameObject slot;
 
     Animator animator;
     CharacterController cc;
@@ -20,26 +19,35 @@ public class PlayerController : NetworkBehaviour
     public int index = 1;
 
     // Start is called before the first frame update
-    
+
+    private void Awake()
+    {
+        if (isLocalPlayer)
+            return;
+        
+        manager = gameObject.GetComponent<InvManager>();
+        slotManager = gameObject.GetComponentInChildren<InvSlot>();
+        manager.Header.transform.SetAsLastSibling();
+
+        for (int i = 0; i < manager.slotHolder.transform.childCount; i++)
+        {
+            manager.slots[i] = manager.slotHolder.transform.GetChild(i).gameObject;
+        }
+    }
+
     void Start()
     {
+        
         animator = GetComponent<Animator>();
         cc = GetComponent<CharacterController>();
-        
-        //slotManager = GetComponent<InvSlot>();
 
-        if (isServer != isLocalPlayer)
-        {
-            inv = GameObject.Find("Inv");
-            slot = GameObject.Find("InventoryGUI");
-        }
-        else
-        {
-            inv = GameObject.Find("Inv");
-            slot = GameObject.Find("InventoryGUI");
-        }
-        manager = inv.gameObject.GetComponent<InvManager>();
-        slotManager = slot.gameObject.GetComponent<InvSlot>();
+        if (!isLocalPlayer)
+            return;
+        //inv = GameObject.Find("Inv");
+        //slot = GameObject.Find("InventoryGUI");        
+        
+        //manager = inv.gameObject.GetComponent<InvManager>();
+        //slotManager = slot.gameObject.GetComponent<InvSlot>();
     }
 
     // Update is called once per frame

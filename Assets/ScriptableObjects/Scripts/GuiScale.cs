@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using System;
 using Mirror;
 
-public class GuiScale : NetworkBehaviour
+public class GuiScale : MonoBehaviour
 {
     float parentRectWidth;
     float parentRectHeight;
@@ -18,6 +18,7 @@ public class GuiScale : NetworkBehaviour
     RectTransform thisRect;
 
     public float lifetime;
+
 
     
     void Start()

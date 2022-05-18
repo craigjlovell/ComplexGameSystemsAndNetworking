@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using Mirror;
 using System;
 
-public class InvSlot : NetworkBehaviour
+public class InvSlot : MonoBehaviour
 {
     [SerializeField] private static InvSlot a_instance;
     public GameObject prefab;
@@ -114,12 +114,12 @@ public class InvSlot : NetworkBehaviour
 
         if (vecSlot == true)
         {
-            if (invSize.x > invSizeLastFrame.x || invSize.y > invSizeLastFrame.y && isClient)
+            if (invSize.x > invSizeLastFrame.x || invSize.y > invSizeLastFrame.y )
             {
                 AddInventorySlotsVector();
             }
 
-            if (invSize.x < invSizeLastFrame.x || invSize.y < invSizeLastFrame.y && isClient)
+            if (invSize.x < invSizeLastFrame.x || invSize.y < invSizeLastFrame.y )
             {
                 RemoveInventorySlotsVector();
             }
@@ -128,12 +128,12 @@ public class InvSlot : NetworkBehaviour
         if (intSlot == true)
         {
 
-            if (numOfSlotsLastFrame < numOfSlots && isClient)
+            if (numOfSlotsLastFrame < numOfSlots  )
             {
                 AddInventorySlotsInt();
             }
 
-            if (numOfSlotsLastFrame > numOfSlots && isClient)
+            if (numOfSlotsLastFrame > numOfSlots )
             {
                 RemoveInventorySlotsInt();
             }
