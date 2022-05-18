@@ -7,7 +7,6 @@ using System;
 
 public class InvSlot : MonoBehaviour
 {
-    [SerializeField] private static InvSlot a_instance;
     public GameObject prefab;
 
     public Vector2 invSize;
@@ -35,23 +34,8 @@ public class InvSlot : MonoBehaviour
 
     // Start is called before the first frame update
 
-    public static InvSlot Instance
-    {
-        get
-        {
-            if (a_instance == null)
-            {
-                GameObject go = new GameObject("InventoryGUI");
-                a_instance = go.AddComponent<InvSlot>();
-            }
-
-            return a_instance;
-        }
-    }
-
     void Awake()
     {
-        a_instance = this;
 
         invSizeLastFrame = invSize;
         numOfSlots = (int)invSize.x * (int)invSize.y;
@@ -65,7 +49,7 @@ public class InvSlot : MonoBehaviour
     }
     void Start()
     {
-        
+
     }
 
     
@@ -85,7 +69,6 @@ public class InvSlot : MonoBehaviour
 
     void Update()
     {
-        //CmdUpdate();
         obj.headerSize = editHeader;
 
         grid.cellSize = slotSize;
@@ -209,48 +192,6 @@ public class InvSlot : MonoBehaviour
         numOfSlots = invSlots.Count;
         grid.constraintCount = (int)invSize.y;
     }
-    
-    //[Command]
-    //void CmdUpdate()
-    //{
-    //    RpcUpdate();
-    //}
-    //
-    //[Client]
-    //void RpcUpdate()
-    //{
-    //    ServerUpdate();
-    //}
-    //
-    //[Server]
-    //void ServerUpdate()
-    //{
-    //    obj.headerSize = editHeader;
-    //
-    //    grid.cellSize = slotSize;
-    //
-    //    RectOffset temp = new RectOffset();
-    //
-    //    temp.left = invPadding.left;
-    //    temp.right = invPadding.right;
-    //    temp.top = invPadding.top;
-    //    temp.bottom = invPadding.bottom;
-    //
-    //    grid.padding = temp;
-    //
-    //    grid.spacing = invSpacing;
-    //}
-
-    //public InvSlot(InventoryItemData a_item, int a_amount)
-    //{
-    //    itemObject = a_item;
-    //    amount = a_amount;
-    //}
-    //
-    //public void AddAmount(int a_value)
-    //{
-    //    amount += a_value;
-    //}
 }
 
 

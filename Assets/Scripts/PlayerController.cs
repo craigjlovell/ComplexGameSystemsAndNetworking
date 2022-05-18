@@ -11,6 +11,7 @@ public class PlayerController : NetworkBehaviour
     Animator animator;
     CharacterController cc;
 
+    ScreenChange screen;
     public InvManager manager;
     public InvSlot slotManager;
 
@@ -20,28 +21,20 @@ public class PlayerController : NetworkBehaviour
 
     // Start is called before the first frame update
 
-    private void Awake()
+    void Awake()
     {
         if (isLocalPlayer)
             return;
         
         manager = gameObject.GetComponent<InvManager>();
-        slotManager = gameObject.GetComponentInChildren<InvSlot>();               
+        slotManager = gameObject.GetComponentInChildren<InvSlot>();
+        animator = gameObject.GetComponent<Animator>();
+        cc = gameObject.GetComponent<CharacterController>();
     }
 
     void Start()
     {
-        
-        animator = GetComponent<Animator>();
-        cc = GetComponent<CharacterController>();
 
-        if (!isLocalPlayer)
-            return;
-        //inv = GameObject.Find("Inv");
-        //slot = GameObject.Find("InventoryGUI");        
-        
-        //manager = inv.gameObject.GetComponent<InvManager>();
-        //slotManager = slot.gameObject.GetComponent<InvSlot>();
     }
 
     // Update is called once per frame
@@ -53,31 +46,27 @@ public class PlayerController : NetworkBehaviour
 
         animator.SetFloat("Turn", Input.GetAxis("Horizontal"));
         
-        if (!isLocalPlayer)
-            return;
+        //if (!isLocalPlayer)
+        //    return;
 
-        CmdTrigger();
+        //if(Input.GetKeyDown(KeyCode.Z))
+        //{
+        //    screen.GameInv1();
+        //}
+        //if (Input.GetKeyDown(KeyCode.X))
+        //{
+        //    screen.GameInv2();
+        //}
+
     }
 
-    [Command]
-    public void CmdTrigger()
-    {
-        RpcTrigger();
-    }
-    
-    [ClientRpc]
-    public void RpcTrigger()
-    {
-        OnTriggerEnter(cc);
-    }
-
-    [Server]
     public void OnTriggerEnter(Collider other)
     {
         ItemLinker item = other.GetComponent<ItemLinker>();
         if (item != null)
         {
-            manager.manager.items.Add(item.itemLinker);
+            manager.items.Add(item.itemLinker);
+            manager.CmdRefresh();
             Destroy(other.gameObject);
         }            
     }
