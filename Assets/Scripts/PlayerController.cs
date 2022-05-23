@@ -13,8 +13,6 @@ public class PlayerController : NetworkBehaviour
     CharacterController cc;
     PlayerManager playerManager;
 
-
-
     Canvas screen;
     public InvManager manager;
     public InvSlot slotManager;
@@ -34,7 +32,7 @@ public class PlayerController : NetworkBehaviour
 
     void Start()
     {
-        //playerManager.AddPlayer(this);
+        playerManager.AddPlayer(this);
     }
 
     // Update is called once per frame
@@ -58,7 +56,7 @@ public class PlayerController : NetworkBehaviour
                 Time.timeScale = 0;
                 screen = GameObject.FindGameObjectWithTag("Game").GetComponent<Canvas>();
                 screen.enabled = false;
-                screen = this.gameObject.GetComponentInChildren<Canvas>();
+                screen = playerManager.players[0].gameObject.GetComponentInChildren<Canvas>();
                 screen.enabled = true;
             }
             else

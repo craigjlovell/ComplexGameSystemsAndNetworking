@@ -5,8 +5,9 @@ using Mirror;
 
 //This Becomes Manager
 public class PlayerManager : NetworkBehaviour
-{    
-    public List<PlayerData> players = new List<PlayerData>();
+{
+    
+    public List<PlayerController> players = new List<PlayerController>();
 
     // Start is called before the first frame update
     void Start()
@@ -22,20 +23,20 @@ public class PlayerManager : NetworkBehaviour
 
     void SetPlayersColors()
     {
-        //for (int i = 0; i < players.Count; i++)
-        //{
-        //    if (players[i] == isLocalPlayer)
-        //    {
-        //        players[i].SetColor(Color.red);
-        //    }
-        //    else if (players[i] == isServer)
-        //    {
-        //        players[i].SetColor(Color.blue);
-        //    }
-        //}
+        for (int i = 0; i < players.Count; i++)
+        {
+            if (players[i] == isLocalPlayer)
+            {
+                players[i].SetColor(Color.red);
+            }
+            else if (players[i] == isServer)
+            {
+                players[i].SetColor(Color.blue);
+            }
+        }
     }
 
-    public void AddPlayer(PlayerData player)
+    public void AddPlayer(PlayerController player)
     {
         players.Add(player);
         SetPlayersColors();
