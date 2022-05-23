@@ -40,7 +40,7 @@ public class InvSlot : MonoBehaviour
         invSizeLastFrame = invSize;
         numOfSlots = (int)invSize.x * (int)invSize.y;
 
-        obj = transform.GetComponentInChildren<GuiScale>();
+        obj = gameObject.transform.GetComponentInChildren<GuiScale>();
 
         grid = GetComponentInParent<GridLayoutGroup>();
         grid.constraintCount = (int)invSize.y;
