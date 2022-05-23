@@ -51,10 +51,15 @@ public class InvManager : NetworkBehaviour
 
     void Update()
     {
-        if (!isLocalPlayer)
+        if (!isServer)
+            return;
+        
+        CmdRefresh();
+
+        if (isLocalPlayer)
             return;
 
-        CmdRefresh();
+        RefreshUI();        
     }
 
     [Server]

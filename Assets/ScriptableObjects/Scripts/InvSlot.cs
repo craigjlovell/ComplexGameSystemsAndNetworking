@@ -60,7 +60,7 @@ public class InvSlot : MonoBehaviour
             for (int y = 1; y <= invSize.y; y++)
             {
                 GameObject slot = Instantiate(prefab) as GameObject;
-                slot.transform.parent = transform;
+                slot.transform.SetParent(transform);
                 slot.name = "Slot " + "Row " + x + " Col " + y;
                 invSlots.Add(slot);
             }

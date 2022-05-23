@@ -5,13 +5,10 @@ using Mirror;
 
 public class PlayerController : NetworkBehaviour
 {
-    //public GameObject inv;
-    //public GameObject slot;
-
     Animator animator;
     CharacterController cc;
 
-    ScreenChange screen;
+    Canvas screen;
     public InvManager manager;
     public InvSlot slotManager;
 
@@ -23,41 +20,72 @@ public class PlayerController : NetworkBehaviour
 
     void Awake()
     {
-        if (isLocalPlayer)
-            return;
+        //if (isServer)
+        //    return;
+        //
+        //if (isLocalPlayer)
+        //    return;
         
         manager = gameObject.GetComponent<InvManager>();
         slotManager = gameObject.GetComponentInChildren<InvSlot>();
         animator = gameObject.GetComponent<Animator>();
         cc = gameObject.GetComponent<CharacterController>();
+        screen = null;
     }
 
     void Start()
     {
-
+        if (isServer != isLocalPlayer)
+        {
+            SetColor(Color.red);
+        }
+        else
+        {
+            SetColor(Color.blue);
+        }
     }
 
     // Update is called once per frame
     void Update()
-    {                
+    {
+        if (!isLocalPlayer)
+            return;
+
         float fwd = Input.GetAxis("Vertical");
         animator.SetFloat("Forward", Mathf.Abs(fwd));
         animator.SetFloat("Sense", Mathf.Sign(fwd));
 
         animator.SetFloat("Turn", Input.GetAxis("Horizontal"));
-        
-        //if (!isLocalPlayer)
-        //    return;
 
-        //if(Input.GetKeyDown(KeyCode.Z))
-        //{
-        //    screen.GameInv1();
-        //}
-        //if (Input.GetKeyDown(KeyCode.X))
-        //{
-        //    screen.GameInv2();
-        //}
 
+
+        if (Input.GetKeyDown(KeyCode.Tab))
+        {
+            screen = GameObject.FindGameObjectWithTag("Game").GetComponent<Canvas>();
+            if (screen.enabled == true)
+            {
+                screen = null;
+                Time.timeScale = 0;
+                screen = GameObject.FindGameObjectWithTag("Game").GetComponent<Canvas>();
+                screen.enabled = false;
+                screen = this.gameObject.GetComponentInChildren<Canvas>();
+                screen.enabled = true;
+            }
+            else
+            {
+                Time.timeScale = 1;
+                screen = this.gameObject.GetComponentInChildren<Canvas>();
+                screen.enabled = false; 
+                screen = GameObject.FindGameObjectWithTag("Game").GetComponent<Canvas>();
+                screen.enabled = true;
+            }                
+        }        
+    }
+
+    void SetColor(Color col)
+    {
+        cc.transform.GetChild(0).GetChild(1).GetComponentInChildren<Renderer>().material.color = col;
+        cc.transform.GetChild(0).GetChild(2).GetComponentInChildren<Renderer>().material.color = col;
     }
 
     public void OnTriggerEnter(Collider other)
@@ -66,7 +94,6 @@ public class PlayerController : NetworkBehaviour
         if (item != null)
         {
             manager.items.Add(item.itemLinker);
-            manager.CmdRefresh();
             Destroy(other.gameObject);
         }            
     }
