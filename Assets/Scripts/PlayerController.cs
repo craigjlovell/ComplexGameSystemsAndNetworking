@@ -10,24 +10,24 @@ public class PlayerController : NetworkBehaviour
     public int index = 1;
 
     Animator animator;
-    CharacterController cc;
     PlayerManager playerManager;
 
-    Canvas screen;
+    Canvas screen = null;
     public InvManager manager;
     public InvSlot slotManager;
 
+
+    public uint id { get; set; }
+    
     // Start is called before the first frame update
 
     void Awake()
     {
         playerManager = GameObject.Find("PlayerManager").GetComponent<PlayerManager>();
         manager = GameObject.Find("InventoryManager").GetComponent<InvManager>();
-
-        animator = gameObject.GetComponent<Animator>();
-        cc = gameObject.GetComponent<CharacterController>();
-        slotManager = gameObject.GetComponent<InvSlot>();        
-        screen = null;
+        animator = GetComponent<Animator>();
+        slotManager = GetComponentInChildren<InvSlot>();
+        id = GetComponent<NetworkIdentity>().netId;
     }
 
     void Start()
@@ -52,22 +52,20 @@ public class PlayerController : NetworkBehaviour
             screen = GameObject.FindGameObjectWithTag("Game").GetComponent<Canvas>();
             if (screen.enabled == true)
             {
-                screen = null;
-                Time.timeScale = 0;
                 screen = GameObject.FindGameObjectWithTag("Game").GetComponent<Canvas>();
                 screen.enabled = false;
-                screen = playerManager.players[0].gameObject.GetComponentInChildren<Canvas>();
+                screen = GetComponentInChildren<Canvas>();
                 screen.enabled = true;
             }
             else
             {
-                Time.timeScale = 1;
-                screen = this.gameObject.GetComponentInChildren<Canvas>();
-                screen.enabled = false; 
+                screen = GetComponentInChildren<Canvas>();
+                screen.enabled = false;
                 screen = GameObject.FindGameObjectWithTag("Game").GetComponent<Canvas>();
                 screen.enabled = true;
-            }                
-        }        
+            }
+        }
+        
     }    
 
     public void OnTriggerEnter(Collider other)
@@ -81,8 +79,8 @@ public class PlayerController : NetworkBehaviour
     }
 
     public void SetColor(Color col)
-    {
-        cc.transform.GetChild(0).GetChild(1).GetComponentInChildren<Renderer>().material.color = col;
-        cc.transform.GetChild(0).GetChild(2).GetComponentInChildren<Renderer>().material.color = col;
+    {        
+        transform.GetChild(0).GetChild(1).GetComponentInChildren<Renderer>().material.color = col;
+        transform.GetChild(0).GetChild(2).GetComponentInChildren<Renderer>().material.color = col;
     }
 }

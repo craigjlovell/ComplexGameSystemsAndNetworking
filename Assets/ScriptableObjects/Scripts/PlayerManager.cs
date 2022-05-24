@@ -5,10 +5,9 @@ using Mirror;
 
 //This Becomes Manager
 public class PlayerManager : NetworkBehaviour
-{
-    
+{    
     public List<PlayerController> players = new List<PlayerController>();
-
+    
     // Start is called before the first frame update
     void Start()
     {
@@ -25,11 +24,11 @@ public class PlayerManager : NetworkBehaviour
     {
         for (int i = 0; i < players.Count; i++)
         {
-            if (players[i] == isLocalPlayer)
+            if (players[i] == isClient)
             {
                 players[i].SetColor(Color.red);
             }
-            else if (players[i] == isServer)
+            if (players[i] == players[0])
             {
                 players[i].SetColor(Color.blue);
             }

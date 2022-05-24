@@ -20,16 +20,16 @@ public class Inventory : NetworkBehaviour
     void Awake()
     {
         inventoryManager = GameObject.Find("InventoryManager").GetComponent<InvManager>();
-        slotManager = slotHolder.gameObject.GetComponent<InvSlot>();
+        slotManager = slotHolder.GetComponent<InvSlot>();
     }
     void Start()
     {                
-        slots = new GameObject[slotHolder.gameObject.transform.childCount];
-        Header.gameObject.transform.SetAsLastSibling();
+        slots = new GameObject[slotHolder.transform.childCount];
+        Header.transform.SetAsLastSibling();
 
-        for (int i = 0; i < slotHolder.gameObject.transform.childCount; i++)
+        for (int i = 0; i < slotHolder.transform.childCount; i++)
         {
-            slots[i] = slotHolder.gameObject.transform.GetChild(i).gameObject;
+            slots[i] = slotHolder.transform.GetChild(i).gameObject;
         }
     }
 
@@ -47,13 +47,13 @@ public class Inventory : NetworkBehaviour
         {
             try
             {
-                slots[i].gameObject.transform.GetChild(0).GetComponent<Image>().enabled = true;
-                slots[i].gameObject.transform.GetChild(0).GetComponent<Image>().sprite = inventoryManager.items[i].itemImage;
+                slots[i].transform.GetChild(0).GetComponent<Image>().enabled = true;
+                slots[i].transform.GetChild(0).GetComponent<Image>().sprite = inventoryManager.items[i].itemImage;
             }
             catch
             {
-                slots[i].gameObject.transform.GetChild(0).GetComponent<Image>().sprite = null;
-                slots[i].gameObject.transform.GetChild(0).GetComponent<Image>().enabled = false;
+                slots[i].transform.GetChild(0).GetComponent<Image>().sprite = null;
+                slots[i].transform.GetChild(0).GetComponent<Image>().enabled = false;
             }
         }
     }
