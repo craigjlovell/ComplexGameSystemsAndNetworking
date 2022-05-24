@@ -7,23 +7,6 @@ using Mirror;
 public class PlayerManager : NetworkBehaviour
 {    
     public List<PlayerController> players = new List<PlayerController>();
-    
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    private void Awake()
-    {
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 
     void SetPlayersColors()
     {
@@ -50,10 +33,22 @@ public class PlayerManager : NetworkBehaviour
     {
         players.Remove(player);
     }
-    public override void OnServerDisconnect(NetworkConnectionToClient conn)
-    {
-     
-        players.Clear();
 
+    public override void OnStopServer()
+    {
+        players.Clear();
     }
+
+    public override void OnStopClient()
+    {
+        players.Clear();
+    }
+
+    //public override void OnStartClient()
+    //{
+    //    for (int i = 0; i < players.Count; i++)
+    //    {
+    //        players[i].inventoryWidget = players[i].transform.GetChild(2).gameObject.GetComponent<Canvas>();
+    //    }
+    //}
 }
