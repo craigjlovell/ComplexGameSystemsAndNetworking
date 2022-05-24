@@ -27,7 +27,7 @@ public class PlayerController : NetworkBehaviour
         manager = GameObject.Find("InventoryManager").GetComponent<InvManager>();
         animator = GetComponent<Animator>();
         slotManager = GetComponentInChildren<InvSlot>();
-        id = GetComponent<NetworkIdentity>().netId;
+        id = GetComponent<NetworkIdentity>().netId;        
     }
 
     void Start()
@@ -38,31 +38,32 @@ public class PlayerController : NetworkBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!isLocalPlayer)
-            return;
-
-        float fwd = Input.GetAxis("Vertical");
-        animator.SetFloat("Forward", Mathf.Abs(fwd));
-        animator.SetFloat("Sense", Mathf.Sign(fwd));
-
-        animator.SetFloat("Turn", Input.GetAxis("Horizontal"));
-
-        if (Input.GetKeyDown(KeyCode.Tab))
+        if (isLocalPlayer)
         {
-            screen = GameObject.FindGameObjectWithTag("Game").GetComponent<Canvas>();
-            if (screen.enabled == true)
+
+            float fwd = Input.GetAxis("Vertical");
+            animator.SetFloat("Forward", Mathf.Abs(fwd));
+            animator.SetFloat("Sense", Mathf.Sign(fwd));
+
+            animator.SetFloat("Turn", Input.GetAxis("Horizontal"));
+
+            if (Input.GetKeyDown(KeyCode.Tab))
             {
                 screen = GameObject.FindGameObjectWithTag("Game").GetComponent<Canvas>();
-                screen.enabled = false;
-                screen = GetComponentInChildren<Canvas>();
-                screen.enabled = true;
-            }
-            else
-            {
-                screen = GetComponentInChildren<Canvas>();
-                screen.enabled = false;
-                screen = GameObject.FindGameObjectWithTag("Game").GetComponent<Canvas>();
-                screen.enabled = true;
+                if (screen.enabled == true)
+                {
+                    screen = GameObject.FindGameObjectWithTag("Game").GetComponent<Canvas>();
+                    screen.enabled = false;
+                    screen = GetComponentInChildren<Canvas>();
+                    screen.enabled = true;
+                }
+                else
+                {
+                    screen = GetComponentInChildren<Canvas>();
+                    screen.enabled = false;
+                    screen = GameObject.FindGameObjectWithTag("Game").GetComponent<Canvas>();
+                    screen.enabled = true;
+                }
             }
         }
         
@@ -79,8 +80,9 @@ public class PlayerController : NetworkBehaviour
     }
 
     public void SetColor(Color col)
-    {        
+    {
         transform.GetChild(0).GetChild(1).GetComponentInChildren<Renderer>().material.color = col;
         transform.GetChild(0).GetChild(2).GetComponentInChildren<Renderer>().material.color = col;
     }
+
 }

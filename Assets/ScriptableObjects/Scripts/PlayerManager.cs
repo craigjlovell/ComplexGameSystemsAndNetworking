@@ -14,6 +14,11 @@ public class PlayerManager : NetworkBehaviour
         
     }
 
+    private void Awake()
+    {
+
+    }
+
     // Update is called once per frame
     void Update()
     {
@@ -32,7 +37,7 @@ public class PlayerManager : NetworkBehaviour
             {
                 players[i].SetColor(Color.blue);
             }
-        }
+        }        
     }
 
     public void AddPlayer(PlayerController player)
@@ -41,5 +46,14 @@ public class PlayerManager : NetworkBehaviour
         SetPlayersColors();
     }
 
-    
+    public void RemovePlayer(PlayerController player)
+    {
+        players.Remove(player);
+    }
+    public override void OnServerDisconnect(NetworkConnectionToClient conn)
+    {
+     
+        players.Clear();
+
+    }
 }
