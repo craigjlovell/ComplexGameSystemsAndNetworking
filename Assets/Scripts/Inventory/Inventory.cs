@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Mirror;
+using TMPro;
 
 public class Inventory : NetworkBehaviour
 {   
@@ -47,11 +48,13 @@ public class Inventory : NetworkBehaviour
             {
                 slots[i].transform.GetChild(0).GetComponent<Image>().enabled = true;
                 slots[i].transform.GetChild(0).GetComponent<Image>().sprite =inventory[i].itemImage;
+                slots[i].transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = "0";
             }
             catch
             {
                 slots[i].transform.GetChild(0).GetComponent<Image>().sprite = null;
                 slots[i].transform.GetChild(0).GetComponent<Image>().enabled = false;
+                slots[i].transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = "";
             }
         }
     }
