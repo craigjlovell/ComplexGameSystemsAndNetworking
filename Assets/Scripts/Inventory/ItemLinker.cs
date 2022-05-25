@@ -9,7 +9,7 @@ public class ItemLinker : NetworkBehaviour
 
     public override void OnStopServer()
     {        
-        gameObject.SetActive(true);
+        //gameObject.SetActive(true);
         base.OnStopServer();
     }
 

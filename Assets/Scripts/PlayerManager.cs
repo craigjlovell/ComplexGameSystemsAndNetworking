@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
+using UnityEngine.SceneManagement;
 
 //This Becomes Manager
 public class PlayerManager : NetworkBehaviour
@@ -37,11 +38,26 @@ public class PlayerManager : NetworkBehaviour
     public override void OnStopServer()
     {
         players.Clear();
+        SceneManager.UnloadScene("SinglePlayer");
+        SceneManager.LoadScene("SinglePlayer");
+        base.OnStopServer();
+    }
+    
+    public override void OnStartServer()
+    {                
+        base.OnStartServer();
     }
 
     public override void OnStopClient()
     {
         players.Clear();
+        SceneManager.LoadSceneAsync("SinglePlayer");
+        base.OnStopClient();
+    }
+    
+    public override void OnStartClient()
+    {        
+        base.OnStartClient();
     }
 
     //public override void OnStartClient()
