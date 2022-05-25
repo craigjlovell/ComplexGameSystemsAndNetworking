@@ -14,7 +14,12 @@ public class Inventory : NetworkBehaviour
     [SerializeField] private InventoryItemData itemToAdd;
     [SerializeField] private InventoryItemData itemToRemove;
 
-    public List<InventoryItemData> inventory = new List<InventoryItemData>();
+    public List<TEST> testInventory = new List<TEST>();
+    public List<InventoryItemData> testdata = new List<InventoryItemData>();
+    public List<ItemLinker> testlinker = new List<ItemLinker>();
+
+    //old list testing new replace if nothing works
+    //public List<GameObject> inventory = new List<GameObject>();
     public GameObject[] slots;
 
     // Start is called before the first frame update
@@ -37,7 +42,7 @@ public class Inventory : NetworkBehaviour
     {
         if (!isLocalPlayer)
             return;
-        RefreshUI();
+        
     }
 
     public void RefreshUI()
@@ -47,8 +52,8 @@ public class Inventory : NetworkBehaviour
             try
             {
                 slots[i].transform.GetChild(0).GetComponent<Image>().enabled = true;
-                slots[i].transform.GetChild(0).GetComponent<Image>().sprite =inventory[i].itemImage;
-                slots[i].transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = "0";
+                slots[i].transform.GetChild(0).GetComponent<Image>().sprite = testInventory[i].GetItem().itemImage;
+                slots[i].transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = testInventory[i].GetAmount() + "";
             }
             catch
             {
@@ -59,13 +64,46 @@ public class Inventory : NetworkBehaviour
         }
     }
 
-    void Add(InventoryItemData item)
+    public void Add(InventoryItemData item)
     {
-        inventory.Add(item);
+        //inventory.Add(item);
+
+        TEST slot = Contains(item);
+        if (slot != null)
+            slot.SetAmount(1);
+        else
+        {
+            testInventory.Add(new TEST(item, 1));
+        }
+
+        RefreshUI();
     }
 
-    void Remove(InventoryItemData item)
+    public void Remove(InventoryItemData item)
     {
-        inventory.Remove(item);
+        //inventory.Remove(item);
+
+        TEST slotToRemove = new TEST();
+        foreach (TEST slot in testInventory)
+        {
+            if (slot.GetItem() == item)
+            {
+                slotToRemove = slot;
+                break;
+            }
+        }
+        testInventory.Remove(slotToRemove);
+        RefreshUI();
     }
+
+    public TEST Contains(InventoryItemData item)
+    {
+        foreach(TEST slot in testInventory)
+        {
+            if(slot.GetItem() == item)
+                return slot;
+        }
+
+        return null;
+    }    
 }

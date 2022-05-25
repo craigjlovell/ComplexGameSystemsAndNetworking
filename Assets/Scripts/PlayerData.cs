@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PlayerData : MonoBehaviour
 {
-    public List<InventoryItemData> inventories = new List<InventoryItemData>();
+    public List<TEST> inventories = new List<TEST>();
     // Start is called before the first frame update
     void Start()
     {

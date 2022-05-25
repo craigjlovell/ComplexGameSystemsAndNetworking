@@ -11,6 +11,7 @@ public class InvItem : InventoryItemData
     //public override InvItem GetDefault() { return this; }
     //public override InvItemFood GetFood() { return null; }
     //public override InvItemEquipment GetEquipment() { return null; }
+
     public void Awake()
     {
         itemType = ItemType.DEFAULT;

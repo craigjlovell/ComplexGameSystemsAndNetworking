@@ -5,12 +5,7 @@ using Mirror;
 
 public class ItemLinker : NetworkBehaviour
 {
-    public InventoryItemData itemLinker;
-
-    public override void OnStopServer()
-    {        
-        //gameObject.SetActive(true);
-        base.OnStopServer();
-    }
+    public InventoryItemData itemDataLinker;
+    public TEST testLink;
 
 }

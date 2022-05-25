@@ -20,7 +20,7 @@ public class InvSlot : MonoBehaviour
     public Vector2 invSpacing;
 
     GridLayoutGroup grid;
-    GuiScale obj;
+    GuiScale obj;    
 
     int numOfSlotsLastFrame = 0;
     Vector2 invSizeLastFrame = new Vector2(0, 0);
@@ -30,13 +30,10 @@ public class InvSlot : MonoBehaviour
     bool vecSlot = false; // if changing 
     bool intSlot = false;
 
-    bool inventorySizeChangable = false;
-
-    // Start is called before the first frame update
+    bool inventorySizeChangable = false;    
 
     void Awake()
     {
-
         invSizeLastFrame = invSize;
         numOfSlots = (int)invSize.x * (int)invSize.y;
 
@@ -47,6 +44,8 @@ public class InvSlot : MonoBehaviour
 
         InitialiseSlotsOnStart();
     }
+
+    // Start is called before the first frame update
     void Start()
     {
 
@@ -67,6 +66,7 @@ public class InvSlot : MonoBehaviour
         }
     }
 
+    // Update is called once per frame
     void Update()
     {
         obj.headerSize = editHeader;

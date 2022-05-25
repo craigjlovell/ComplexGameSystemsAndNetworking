@@ -60,8 +60,8 @@ public class PlayerController : NetworkBehaviour
         ItemLinker item = other.GetComponent<ItemLinker>();
         if (item != null)
         {
-            inventoryItems.inventory.Add(item.itemLinker);
-            Destroy(other.gameObject);
+            inventoryItems.Add(item.itemDataLinker);
+            //Destroy(other.gameObject);
             //other.gameObject.SetActive(false);
         }
     }
