@@ -15,6 +15,8 @@ public class InventoryItemData : ScriptableObject
     public string id;
     public ItemType itemType;
     public Sprite itemImage;
+    public GameObject item;
+    //public GameObject item;
 
     public int stackSizeMax = 100;
 

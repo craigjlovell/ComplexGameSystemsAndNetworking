@@ -12,7 +12,7 @@ public class PlayerController : NetworkBehaviour
 
     Animator animator;
     PlayerManager playerManager;
-    Inventory inventoryItems;
+    public Inventory inventoryItems;
 
     public Canvas inventoryWidget;
 

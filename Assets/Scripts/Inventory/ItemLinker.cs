@@ -2,21 +2,32 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
+using System;
+using UnityEngine.UI;
 
-public class ItemLinker : NetworkBehaviour
+public class ItemLinker : MonoBehaviour
 {
-    public InventoryItemData itemDataLinker;
+    InventoryItemData itemData;
     public Inventory inventoryItems;
+
+    PlayerManager playerManager;
+
+    public void Awake()
+    {
+        playerManager = GameObject.Find("PlayerManager").GetComponent<PlayerManager>();
+    }
 
     public void OnTriggerEnter(Collider other)
     {
         ItemLinker item = GetComponent<ItemLinker>();
+        PlayerController player = other.GetComponent<PlayerController>();
         inventoryItems = other.GetComponent<Inventory>();
-        if (item != null)
+
+        if (player != null)
         {
-            inventoryItems.CmdAdd(item.itemDataLinker);
-            //Destroy(other.gameObject);
-            //ddother.gameObject.SetActive(false);
+            inventoryItems.CmdAdd(item.itemData);
+            Destroy(item.gameObject);
+            //other.gameObject.SetActive(false);
         }
        
     }

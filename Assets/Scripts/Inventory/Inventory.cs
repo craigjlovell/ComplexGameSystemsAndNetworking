@@ -13,7 +13,8 @@ public class Inventory : NetworkBehaviour
     [SerializeField] private GameObject Header;
     [SerializeField] private InventoryItemData itemToAdd;
     [SerializeField] private InventoryItemData itemToRemove;
-    public InventoryItemData itemData;
+    InventoryItemData itemData;
+    InventoryItemData itemLinker;
 
     [SerializeField] private int amount;
 
@@ -97,7 +98,7 @@ public class Inventory : NetworkBehaviour
     void Add(InventoryItemData item)
     {
         inventory.Add(item);
-        SetAmount(1);
+        //SetAmount(1);
         RpcRefreshUI();
 
         //InventoryItemData slot = Contains(item);
