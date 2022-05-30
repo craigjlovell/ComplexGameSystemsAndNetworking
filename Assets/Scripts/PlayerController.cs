@@ -55,17 +55,17 @@ public class PlayerController : NetworkBehaviour
         }
     }
 
-    public void OnTriggerEnter(Collider other)
-    {
-        ItemLinker item = other.GetComponent<ItemLinker>();
-
-        if (item != null)
-        {
-            inventoryItems.RpcAdd(item);
-            Destroy(other.gameObject);
-            //other.gameObject.SetActive(false);
-        }
-    }
+    //public void OnTriggerEnter(Collider other)
+    //{
+    //    ItemLinker item = other.GetComponent<ItemLinker>();
+    //
+    //    if (item != null)
+    //    {
+    //        inventoryItems.CmdAdd(item.itemDataLinker);
+    //        Destroy(other.gameObject);
+    //        //ddother.gameObject.SetActive(false);
+    //    }        
+    //}
 
     public void SetColor(Color col)
     {
