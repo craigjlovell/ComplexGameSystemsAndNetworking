@@ -14,8 +14,9 @@ public abstract class InventoryItemData : ScriptableObject
 {
     public string id;
     public ItemType itemType;
-    public GameObject item;
     public Sprite itemImage;
+
+    public int stackSizeMax = 100;
 
     public bool isConsumable;
     public bool isStackable;
@@ -24,5 +25,13 @@ public abstract class InventoryItemData : ScriptableObject
     //public abstract InvItem GetDefault();
     //public abstract InvItemFood GetFood();
     //public abstract InvItemEquipment GetEquipment();
+
+    public void CanStack()
+    {
+        if (isStackable)
+        { 
+
+        }
+    }
 }
 

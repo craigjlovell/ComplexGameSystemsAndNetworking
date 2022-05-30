@@ -6,7 +6,7 @@ using Mirror;
 using TMPro;
 
 public class Inventory : NetworkBehaviour
-{   
+{
     PlayerManager playerManager;
 
     [SerializeField] private GameObject slotHolder;
@@ -14,12 +14,9 @@ public class Inventory : NetworkBehaviour
     [SerializeField] private InventoryItemData itemToAdd;
     [SerializeField] private InventoryItemData itemToRemove;
 
-    public List<TEST> testInventory = new List<TEST>();
-    public List<InventoryItemData> testdata = new List<InventoryItemData>();
-    public List<ItemLinker> testlinker = new List<ItemLinker>();
+   //public readonly SyncList<InventoryItemData> inventory = new SyncList<InventoryItemData>();
+    public List<InventoryItemData> inventory = new List<InventoryItemData>();
 
-    //old list testing new replace if nothing works
-    //public List<GameObject> inventory = new List<GameObject>();
     public GameObject[] slots;
 
     // Start is called before the first frame update
@@ -40,20 +37,22 @@ public class Inventory : NetworkBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!isLocalPlayer)
-            return;
-        
+        if (isServer)
+        {
+
+        }
     }
 
-    public void RefreshUI()
+    [ClientRpc]
+    void RpcRefreshUI()
     {
         for (int i = 0; i < slots.Length - 1; i++)
         {
             try
             {
                 slots[i].transform.GetChild(0).GetComponent<Image>().enabled = true;
-                slots[i].transform.GetChild(0).GetComponent<Image>().sprite = testInventory[i].GetItem().itemImage;
-                slots[i].transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = testInventory[i].GetAmount() + "";
+                slots[i].transform.GetChild(0).GetComponent<Image>().sprite = inventory[i].itemImage;
+                slots[i].transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = inventory[i] + "";
             }
             catch
             {
@@ -64,46 +63,29 @@ public class Inventory : NetworkBehaviour
         }
     }
 
-    public void Add(InventoryItemData item)
+    [Command]
+    public void RpcAdd(ItemLinker item)
     {
-        //inventory.Add(item);
-
-        TEST slot = Contains(item);
-        if (slot != null)
-            slot.SetAmount(1);
-        else
-        {
-            testInventory.Add(new TEST(item, 1));
-        }
-
-        RefreshUI();
+        inventory.Add(item.itemDataLinker);
+        RpcRefreshUI();
     }
 
-    public void Remove(InventoryItemData item)
+    [Command]
+    public void RpcRemove(ItemLinker item)
     {
-        //inventory.Remove(item);
-
-        TEST slotToRemove = new TEST();
-        foreach (TEST slot in testInventory)
-        {
-            if (slot.GetItem() == item)
-            {
-                slotToRemove = slot;
-                break;
-            }
-        }
-        testInventory.Remove(slotToRemove);
-        RefreshUI();
+        inventory.Remove(item.itemDataLinker);
+        RpcRefreshUI();
     }
 
-    public TEST Contains(InventoryItemData item)
-    {
-        foreach(TEST slot in testInventory)
-        {
-            if(slot.GetItem() == item)
-                return slot;
-        }
-
-        return null;
-    }    
+    //[Command]
+    //public void CmdAdd()
+    //{
+    //    RpcAdd();
+    //}
+    //
+    //[Command]
+    //public void CmdRemove()
+    //{
+    //    RpcRemove();
+    //}
 }

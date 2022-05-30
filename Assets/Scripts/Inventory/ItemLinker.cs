@@ -6,6 +6,4 @@ using Mirror;
 public class ItemLinker : NetworkBehaviour
 {
     public InventoryItemData itemDataLinker;
-    public TEST testLink;
-
 }
