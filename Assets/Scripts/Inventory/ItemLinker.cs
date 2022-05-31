@@ -29,9 +29,8 @@ public class ItemLinker : NetworkBehaviour
             if (other.gameObject.GetComponent<PlayerController>() && other == other.GetComponent<CharacterController>())
             {
                 inventoryItems = other.GetComponent<Inventory>();
-
                 inventoryItems.Add(itemData);
-                //other.gameObject.GetComponent<PlayerController>().id
+                // to add an item to the apporiate player's PlayerData (script) via an id   
             }
         }
     }

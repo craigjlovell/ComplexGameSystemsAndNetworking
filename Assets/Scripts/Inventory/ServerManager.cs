@@ -35,6 +35,16 @@ public class ServerManager : NetworkBehaviour
         players.Remove(player);
     }
 
+    public void AddPlayerInventory(PlayerData data)
+    {
+        playersData.Add(data);        
+    }
+
+    public void RemovePlayerInventory(PlayerData data)
+    {
+        playersData.Remove(data);
+    }
+
     public override void OnStopServer()
     {
         players.Clear();

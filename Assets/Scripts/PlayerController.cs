@@ -22,7 +22,7 @@ public class PlayerController : NetworkBehaviour
 
     void Awake()
     {
-        serverManager = GameObject.Find("PlayerManager").GetComponent<ServerManager>();        
+        serverManager = GameObject.Find("ServerManagerData").GetComponent<ServerManager>();        
         animator = GetComponent<Animator>();
         inventoryItems = GetComponent<Inventory>();
     }

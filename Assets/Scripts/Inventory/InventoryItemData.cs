@@ -12,6 +12,7 @@ public enum ItemType
 
 public class InventoryItemData : ScriptableObject
 {
+
     public string id;
     public ItemType itemType;
     public GameObject item;

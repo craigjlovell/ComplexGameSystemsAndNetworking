@@ -9,21 +9,22 @@ public class Login : MonoBehaviour
 {
     [SerializeField] private GameObject signInDsiplay = default;
     [SerializeField] private TMP_InputField usernameInputField = default;
-    [SerializeField] private TMP_InputField emailInputField = default;
     [SerializeField] private TMP_InputField passwordInputField = default;
 
     public static string SessionTicket;
+    public static string EntityID;
 
     public void CreateAccount()
     {
         PlayFabClientAPI.RegisterPlayFabUser(new RegisterPlayFabUserRequest
         {
             Username = usernameInputField.text,
-            Email = emailInputField.text,
-            Password = passwordInputField.text
+            Password = passwordInputField.text,
+            RequireBothUsernameAndEmail = false                     
         }, result =>
         {
             SessionTicket = result.SessionTicket;
+            EntityID = result.EntityToken.Entity.Id;
             signInDsiplay.SetActive(false);
         }, error =>
         {
@@ -40,6 +41,7 @@ public class Login : MonoBehaviour
         }, result => 
         {
             SessionTicket = result.SessionTicket;
+            EntityID = result.EntityToken.Entity.Id;
             signInDsiplay.SetActive(false);
         }, error => 
         {

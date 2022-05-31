@@ -7,7 +7,9 @@ using TMPro;
 
 public class Inventory : NetworkBehaviour
 {
-    PlayerManager playerManager;
+    ServerManager serverManager;
+    PlayerData playerData;
+    InvImage invImage;
 
     [SerializeField] private GameObject slotHolder;
     [SerializeField] private GameObject Header;
@@ -27,11 +29,13 @@ public class Inventory : NetworkBehaviour
     // Start is called before the first frame update
     void Awake()
     {
-        playerManager = GameObject.Find("PlayerManager").GetComponent<PlayerManager>();
+        serverManager = GameObject.Find("ServerManagerData").GetComponent<ServerManager>();
     }
 
     void Start()
     {
+
+        serverManager.AddPlayerInventory(playerData);
         slots = new GameObject[slotHolder.transform.childCount];
         Header.transform.SetAsLastSibling();
         for (int i = 0; i < slotHolder.transform.childCount; i++)
@@ -54,13 +58,13 @@ public class Inventory : NetworkBehaviour
             try
             {
                 slots[i].transform.GetChild(0).GetComponent<Image>().enabled = true;
-                //slots[i].transform.GetChild(0).GetComponent<Image>().sprite = inventory[i].itemImage;
+                slots[i].transform.GetChild(0).GetComponent<Image>().sprite = inventory[i].item.gameObject.GetComponent<InvImage>().itemImage;
                 slots[i].transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = GetAmount() + "";
             }
             catch
             {
                 slots[i].transform.GetChild(0).GetComponent<Image>().sprite = null;
-                //slots[i].transform.GetChild(0).GetComponent<Image>().enabled = false;
+                slots[i].transform.GetChild(0).GetComponent<Image>().enabled = false;
                 slots[i].transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = "";
             }
         }
