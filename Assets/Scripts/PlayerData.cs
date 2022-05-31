@@ -5,7 +5,10 @@ using Mirror;
 
 public class PlayerData : NetworkBehaviour
 {
-    public List<InventoryItemData> inventories = new List<InventoryItemData>();
+    public List<InventoryItemData> inventory = new List<InventoryItemData>();
+
+    public int playerID;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -15,10 +18,7 @@ public class PlayerData : NetworkBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(isServer)
-        {
-            
-        }
+
     }
     
 }

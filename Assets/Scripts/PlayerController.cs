@@ -11,7 +11,7 @@ public class PlayerController : NetworkBehaviour
     public int index = 1;
 
     Animator animator;
-    PlayerManager playerManager;
+    ServerManager serverManager;
     public Inventory inventoryItems;
 
     public Canvas inventoryWidget;
@@ -22,14 +22,14 @@ public class PlayerController : NetworkBehaviour
 
     void Awake()
     {
-        playerManager = GameObject.Find("PlayerManager").GetComponent<PlayerManager>();        
+        serverManager = GameObject.Find("PlayerManager").GetComponent<ServerManager>();        
         animator = GetComponent<Animator>();
         inventoryItems = GetComponent<Inventory>();
     }
 
     void Start()
     {
-        playerManager.AddPlayer(this);
+        serverManager.AddPlayer(this);
         id = GetComponent<NetworkIdentity>().netId;
     }
 
