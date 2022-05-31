@@ -52,7 +52,7 @@ namespace PlayFab.Networking
             }
         }
 
-        public override void OnServerConnect(NetworkConnection conn)
+        public override void OnServerConnect(NetworkConnectionToClient conn)
         {
             base.OnServerConnect(conn);
 
@@ -69,14 +69,14 @@ namespace PlayFab.Networking
             }
         }                            
 
-        public override void OnServerError(NetworkConnection conn, Exception ex)
+        public override void OnServerError(NetworkConnectionToClient conn, Exception ex)
         {
             base.OnServerError(conn, ex);
 
             Debug.Log(string.Format("Unity Network Connection Status: exception - {0}", ex.Message));
         }
 
-        public override void OnServerDisconnect(NetworkConnection conn)
+        public override void OnServerDisconnect(NetworkConnectionToClient conn)
         {
             base.OnServerDisconnect(conn);
 

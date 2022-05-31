@@ -6,6 +6,7 @@ using PlayFab.Networking;
 using System.Collections.Generic;
 using PlayFab.MultiplayerAgent.Model;
 using System.Linq;
+using Mirror;
 
 public class AgentListener : MonoBehaviour
 {
@@ -37,7 +38,7 @@ public class AgentListener : MonoBehaviour
         if (portInfo.Count() > 0)
         {
             Debug.Log(string.Format("port with name {0} was found in GSDK Config Settings.", ListeningPortKey));
-            UnityNetworkServer.Instance.Port = portInfo.Single().ServerListeningPort;
+            //UnityNetworkServer.Instance.Port = portInfo.Single().ServerListeningPort;
         }
         else
         {
