@@ -5,30 +5,30 @@ using Mirror;
 using System;
 using UnityEngine.UI;
 
-public class ItemLinker : MonoBehaviour
+public class ItemLinker : NetworkBehaviour
 {
-    InventoryItemData itemData;
-    public Inventory inventoryItems;
-
-    PlayerManager playerManager;
+    public InventoryItemData itemData;
+    [SerializeField] private Inventory inventoryItems;
+    [SerializeField] private PlayerController player;
 
     public void Awake()
     {
-        playerManager = GameObject.Find("PlayerManager").GetComponent<PlayerManager>();
+
     }
 
+    private void Update()
+    {
+        
+    }
+
+    //Todo send command to server that items been added to a specific player 
     public void OnTriggerEnter(Collider other)
     {
-        ItemLinker item = GetComponent<ItemLinker>();
-        PlayerController player = other.GetComponent<PlayerController>();
-        inventoryItems = other.GetComponent<Inventory>();
-
-        if (player != null)
+        if (other.gameObject.GetComponent<PlayerController>() && other == other.GetComponent<CharacterController>())
         {
-            inventoryItems.CmdAdd(item.itemData);
-            Destroy(item.gameObject);
-            //other.gameObject.SetActive(false);
-        }
-       
+            inventoryItems = other.GetComponent<Inventory>();
+
+            inventoryItems.Add(itemData);
+        }             
     }
 }
