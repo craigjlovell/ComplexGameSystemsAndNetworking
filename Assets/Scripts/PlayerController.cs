@@ -72,7 +72,7 @@ public class PlayerController : NetworkBehaviour
     void Successs(GetAccountInfoResult result)
     {
 
-        MyPlayfabID = result.AccountInfo.PlayFabId;
+        MyPlayfabID = result.AccountInfo.TitleInfo.TitlePlayerAccount.Id;//.PlayFabId;
 
     }
 

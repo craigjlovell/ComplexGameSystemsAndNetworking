@@ -1,124 +1,98 @@
-namespace PlayFab.Networking
+using System;
+using System.Collections.Generic;
+using UnityEngine;
+using Mirror;
+using UnityEngine.Events;
+using PlayFab;
+using kcp2k;
+
+public class UnityNetworkServer : NetworkManager
 {
-    using System;
-    using System.Collections.Generic;
-    using UnityEngine;
-    using Mirror;
-    using UnityEngine.Events;
+    public event Action<string> OnPlayerAdded;
+    public event Action<string> OnPlayerRemoved;
 
-    public class UnityNetworkServer : NetworkManager
+    public List<UnityNetworkConnection> Connections { get; set; }
+
+    [SerializeField] Configuration _configuration = default;
+    public Configuration Config
     {
-        public static UnityNetworkServer Instance { get; private set; }
-
-        public PlayerEvent OnPlayerAdded = new PlayerEvent();
-        public PlayerEvent OnPlayerRemoved = new PlayerEvent();
-
-        public List<UnityNetworkConnection> Connections
+        get
         {
-            get { return _connections; }
-            private set { _connections = value; }
+            return _configuration;
         }
-        private List<UnityNetworkConnection> _connections = new List<UnityNetworkConnection>();
+    }
 
-        public class PlayerEvent : UnityEvent<string> { }
-
-        // Use this for initialization
-        public override void Awake()
+    public KcpTransport Transport
+    {
+        get
         {
-            base.Awake();
-            Instance = this;
-            NetworkServer.RegisterHandler<ReceiveAuthenticateMessage>(OnReceiveAuthenticate);
+            return transport as KcpTransport;
         }
-
-        public void StartListen()
+        set
         {
-            NetworkServer.Listen(maxConnections);
+            transport = value;
         }
+    }
 
-        public override void OnApplicationQuit()
+    public static Action<NetworkConnection> OnClientDisconnected { get; internal set; }
+    public static Action<NetworkConnection> OnClientConnected { get; internal set; }
+
+    public override void Awake()
+    {
+        base.Awake();
+
+        if (Config.buildType == BuildType.REMOTE_SERVER)
         {
-            base.OnApplicationQuit();
-            NetworkServer.Shutdown();
+            Connections = new List<UnityNetworkConnection>();
+            NetworkServer.RegisterHandler<ReceiveAuthenticateMessage>(OnRecieveAuthenticate);
         }
+    }
 
-        private void OnReceiveAuthenticate(NetworkConnectionToClient nconn, ReceiveAuthenticateMessage message)
+    private void OnRecieveAuthenticate(NetworkConnection _conn, ReceiveAuthenticateMessage msgType)
+    {
+        var conn = Connections.Find(c => c.ConnectionId == _conn.connectionId);
+        if (conn != null)
         {
-            var conn = _connections.Find(c => c.ConnectionId == nconn.connectionId);
-            if (conn != null)
+            conn.PlayFabId = msgType.PlayFabId;
+            conn.IsAuthenticated = true;
+            OnPlayerAdded?.Invoke(msgType.PlayFabId);
+        }
+    }
+
+    public override void OnServerConnect(NetworkConnectionToClient conn)
+    {
+        var uconn = Connections.Find(c => c.ConnectionId == conn.connectionId);
+        if (uconn == null)
+        {
+            Connections.Add(new UnityNetworkConnection()
             {
-                conn.PlayFabId = message.PlayFabId;
-                conn.IsAuthenticated = true;
-                OnPlayerAdded.Invoke(message.PlayFabId);
-            }
+                Connection = conn,
+                ConnectionId = conn.connectionId,
+                LobbyId = PlayFabMultiplayerAgentAPI.SessionConfig.SessionId
+            });
         }
+        base.OnServerConnect(conn);
+    }
 
-        public override void OnServerConnect(NetworkConnectionToClient conn)
+    public override void OnServerDisconnect(NetworkConnectionToClient conn)
+    {
+        var uconn = Connections.Find(c => c.ConnectionId == conn.connectionId);
+        if (uconn != null)
         {
-            base.OnServerConnect(conn);
-
-            Debug.LogWarning("Client Connected");
-            var uconn = _connections.Find(c => c.ConnectionId == conn.connectionId);
-            if (uconn == null)
+            if (!string.IsNullOrEmpty(uconn.PlayFabId))
             {
-                _connections.Add(new UnityNetworkConnection()
-                {
-                    Connection = conn,
-                    ConnectionId = conn.connectionId,
-                    LobbyId = PlayFabMultiplayerAgentAPI.SessionConfig.SessionId
-                });
+                OnPlayerRemoved?.Invoke(uconn.PlayFabId);
             }
-        }                            
-
-        public override void OnServerError(NetworkConnectionToClient conn, Exception ex)
-        {
-            base.OnServerError(conn, ex);
-
-            Debug.Log(string.Format("Unity Network Connection Status: exception - {0}", ex.Message));
-        }
-
-        public override void OnServerDisconnect(NetworkConnectionToClient conn)
-        {
-            base.OnServerDisconnect(conn);
-
-            var uconn = _connections.Find(c => c.ConnectionId == conn.connectionId);
-            if (uconn != null)
-            {
-                if (!string.IsNullOrEmpty(uconn.PlayFabId))
-                {
-                    OnPlayerRemoved.Invoke(uconn.PlayFabId);
-                }
-                _connections.Remove(uconn);
-            }
+            Connections.Remove(uconn);
         }
     }
-
-    [Serializable]
-    public class UnityNetworkConnection
+    public override void OnClientConnect(NetworkConnection conn)
     {
-        public bool IsAuthenticated;
-        public string PlayFabId;
-        public string LobbyId;
-        public int ConnectionId;
-        public NetworkConnection Connection;
+        base.OnClientConnect(conn);
     }
-
-    public class CustomGameServerMessageTypes
+    public override void OnClientDisconnect(NetworkConnection conn)
     {
-        public const short ReceiveAuthenticate = 900;
-        public const short ShutdownMessage = 901;
-        public const short MaintenanceMessage = 902;
-    }
-
-    public struct ReceiveAuthenticateMessage : NetworkMessage
-    {
-        public string PlayFabId;
-    }
-
-    public struct ShutdownMessage : NetworkMessage { }
-
-    [Serializable]
-    public struct MaintenanceMessage : NetworkMessage
-    {
-        public DateTime ScheduledMaintenanceUTC;
+        base.OnClientDisconnect(conn);
     }
 }
+
