@@ -13,11 +13,12 @@ public enum ItemType
 public class InventoryItemData : ScriptableObject
 {
 
-    public string id;
+    public string itemID;
     public ItemType itemType;
-    public GameObject item;
+    public GameObject itemPrefab;
 
     public int stackSizeMax = 100;
+    public int stackSizeMin = 0;
 
     public bool isConsumable;
     public bool isStackable;

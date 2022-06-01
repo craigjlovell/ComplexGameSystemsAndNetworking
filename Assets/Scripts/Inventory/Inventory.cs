@@ -9,7 +9,6 @@ public class Inventory : NetworkBehaviour
 {
     ServerManager serverManager;
     PlayerData playerData;
-    InvImage invImage;
 
     [SerializeField] private GameObject slotHolder;
     [SerializeField] private GameObject Header;
@@ -34,39 +33,39 @@ public class Inventory : NetworkBehaviour
 
     void Start()
     {
-
         serverManager.AddPlayerInventory(playerData);
+
         slots = new GameObject[slotHolder.transform.childCount];
         Header.transform.SetAsLastSibling();
         for (int i = 0; i < slotHolder.transform.childCount; i++)
         {
-            slots[i] = slotHolder.transform.GetChild(i).gameObject;
+            if (slotHolder.transform.GetChild(i).CompareTag("Slot"))
+            {
+                slots[i] = slotHolder.transform.GetChild(i).gameObject;
+
+                slots[i].transform.GetChild(0).GetComponent<Image>().sprite = null;
+                slots[i].transform.GetChild(0).GetComponent<Image>().enabled = false;
+                slots[i].transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = "";
+            }
         }
     }
 
     // Update is called once per frame
     void Update()
     {
-
+        
     }
 
-    [ClientRpc]
-    void RpcRefreshUI()
+    void RefreshUI()
     {
-        for (int i = 0; i < slots.Length - 1; i++)
+        for (int i = 0; i < inventory.Count; i++)
         {
-            try
+            if (inventory[i] != null)
             {
                 slots[i].transform.GetChild(0).GetComponent<Image>().enabled = true;
-                slots[i].transform.GetChild(0).GetComponent<Image>().sprite = inventory[i].item.gameObject.GetComponent<InvImage>().itemImage;
+                slots[i].transform.GetChild(0).GetComponent<Image>().sprite = inventory[i].itemPrefab.GetComponent<InvImage>().itemImage;
                 slots[i].transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = GetAmount() + "";
-            }
-            catch
-            {
-                slots[i].transform.GetChild(0).GetComponent<Image>().sprite = null;
-                slots[i].transform.GetChild(0).GetComponent<Image>().enabled = false;
-                slots[i].transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = "";
-            }
+            }           
         }
     }
 
@@ -83,7 +82,7 @@ public class Inventory : NetworkBehaviour
     public void Add(InventoryItemData item)
     {
         inventory.Add(item);
-        RpcRefreshUI();
+        RefreshUI();
 
         //InventoryItemData slot = Contains(item);
         //if (slot != null)
@@ -98,7 +97,7 @@ public class Inventory : NetworkBehaviour
     public void Remove(InventoryItemData item)
     {
         inventory.Remove(item);
-        RpcRefreshUI();
+        RefreshUI();
     }
 
 }
