@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
 using UnityEngine.UI;
+using PlayFab;
+using PlayFab.ServerModels;
+using PlayFab.ClientModels;
 
 public class PlayerController : NetworkBehaviour
 {
@@ -16,6 +19,7 @@ public class PlayerController : NetworkBehaviour
 
     public Canvas inventoryWidget;
 
+    public string MyPlayfabID;
     public uint id { get; set; }
 
     // Start is called before the first frame update
@@ -25,23 +29,23 @@ public class PlayerController : NetworkBehaviour
         serverManager = GameObject.Find("ServerManagerData").GetComponent<ServerManager>();        
         animator = GetComponent<Animator>();
         inventoryItems = GetComponent<Inventory>();
+        
     }
 
     void Start()
     {
         serverManager.AddPlayer(this);
         id = GetComponent<NetworkIdentity>().netId;
+        GetAccountInfo();
     }
 
     // Update is called once per frame
     void Update()
     {
         if (!isLocalPlayer)
-        {
-            Debug.Log(Login.EntityID);
             return;
-        }
 
+        
         float fwd = Input.GetAxis("Vertical");
 
         animator.SetFloat("Forward", Mathf.Abs(fwd));
@@ -56,6 +60,27 @@ public class PlayerController : NetworkBehaviour
         {
             inventoryWidget.enabled = true;
         }
+    }
+
+    void GetAccountInfo()
+    {
+        GetAccountInfoRequest request = new GetAccountInfoRequest();
+        PlayFabClientAPI.GetAccountInfo(request, Successs, fail);
+    }
+
+
+    void Successs(GetAccountInfoResult result)
+    {
+
+        MyPlayfabID = result.AccountInfo.PlayFabId;
+
+    }
+
+
+    void fail(PlayFabError error)
+    {
+
+        Debug.LogError(error.GenerateErrorReport());
     }
 
     public void SetColor(Color col)

@@ -33,10 +33,20 @@ public class ItemLinker : NetworkBehaviour
             inventoryItems = other.GetComponent<Inventory>();
             inventoryItems.Add(itemData);
         }
+        //GiveItemToPlayer(other.GetComponent<NetworkIdentity>().connectionToClient, itemData, other.gameObject);
+
+        if (isServer)
+        {
+            if (other.gameObject.GetComponent<PlayerController>() && other == other.GetComponent<CharacterController>())
+            {
+                inventoryItems = other.GetComponent<Inventory>();
+                inventoryItems.Add(itemData);
+                // to add an item to the apporiate player's PlayerData (script) via an id   
+            }
+        }
+
 
         
-         
-        GiveItemToPlayer(other.GetComponent<NetworkIdentity>().connectionToClient, itemData, other.gameObject);
 
     }
 

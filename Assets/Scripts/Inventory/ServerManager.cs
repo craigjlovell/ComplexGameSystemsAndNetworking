@@ -70,6 +70,11 @@ public class ServerManager : NetworkBehaviour
         base.OnStartClient();
     }
 
+    private void Update()
+    {
+        Debug.Log(Login.EntityID);
+    }
+
     //public override void OnStartClient()
     //{
     //    for (int i = 0; i < players.Count; i++)

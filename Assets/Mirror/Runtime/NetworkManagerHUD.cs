@@ -94,7 +94,6 @@ namespace Mirror
                     manager.StopClient();
                 }
             }
-
         }
 
         void StatusLabels()

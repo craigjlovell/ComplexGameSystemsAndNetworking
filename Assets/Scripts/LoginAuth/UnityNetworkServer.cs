@@ -41,7 +41,7 @@ namespace PlayFab.Networking
             NetworkServer.Shutdown();
         }
 
-        private void OnReceiveAuthenticate(NetworkConnection nconn, ReceiveAuthenticateMessage message)
+        private void OnReceiveAuthenticate(NetworkConnectionToClient nconn, ReceiveAuthenticateMessage message)
         {
             var conn = _connections.Find(c => c.ConnectionId == nconn.connectionId);
             if (conn != null)

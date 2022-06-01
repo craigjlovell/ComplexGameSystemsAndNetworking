@@ -4,9 +4,8 @@ using TMPro;
 using UnityEngine;
 using PlayFab;
 using PlayFab.ClientModels;
-using Mirror;
 
-public class Login : NetworkBehaviour
+public class Login : MonoBehaviour
 {
     [SerializeField] private GameObject signInDsiplay = default;
     [SerializeField] private TMP_InputField usernameInputField = default;
@@ -32,7 +31,7 @@ public class Login : NetworkBehaviour
             Debug.Log(error.GenerateErrorReport());
         });
     }
-    
+
     public void SignIn()
     {
         PlayFabClientAPI.LoginWithPlayFab(new LoginWithPlayFabRequest
