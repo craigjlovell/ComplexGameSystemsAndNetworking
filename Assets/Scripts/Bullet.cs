@@ -14,7 +14,7 @@ public class Bullet : NetworkBehaviour
     //{
     //    Destroy(gameObject, lifetime);
     //}
-
+    //
     // Update is called once per frame
     [Server]
     void Update()
