@@ -4,8 +4,9 @@ using TMPro;
 using UnityEngine;
 using PlayFab;
 using PlayFab.ClientModels;
+using Mirror;
 
-public class Login : MonoBehaviour
+public class Login : NetworkBehaviour
 {
     [SerializeField] private GameObject signInDsiplay = default;
     [SerializeField] private TMP_InputField usernameInputField = default;

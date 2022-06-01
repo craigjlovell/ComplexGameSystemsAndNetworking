@@ -37,7 +37,10 @@ public class PlayerController : NetworkBehaviour
     void Update()
     {
         if (!isLocalPlayer)
+        {
+            Debug.Log(Login.EntityID);
             return;
+        }
 
         float fwd = Input.GetAxis("Vertical");
 

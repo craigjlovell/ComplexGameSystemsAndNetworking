@@ -28,7 +28,7 @@ public class ItemLinker : NetworkBehaviour
         //removed nasted if 
         if (!isServer) return;
         //if this is just to check if its a player, better check for the tag.
-        if (other.gameObject.GetComponent<PlayerController>() && other == other.GetComponent<CharacterController>())
+        if (!other.gameObject.GetComponent<PlayerController>() && other == other.GetComponent<CharacterController>())
         {
             inventoryItems = other.GetComponent<Inventory>();
             inventoryItems.Add(itemData);
