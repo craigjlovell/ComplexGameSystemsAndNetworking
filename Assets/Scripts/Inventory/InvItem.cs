@@ -10,6 +10,6 @@ public class InvItem : InventoryItemData
 
     public void Awake()
     {
-        itemType = ItemType.DEFAULT;
+        itemType = ItemTypes.DEFAULT;
     }
 }

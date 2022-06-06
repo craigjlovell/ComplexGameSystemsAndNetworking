@@ -8,6 +8,6 @@ public class InvItemFood : InventoryItemData
 
     public void Awake()
     {
-        itemType = ItemType.FOOD;
+        itemType = ItemTypes.FOOD;
     }
 }

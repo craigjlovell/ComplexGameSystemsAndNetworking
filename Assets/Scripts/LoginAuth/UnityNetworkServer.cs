@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
-using UnityEngine.Events;
 using PlayFab;
 using kcp2k;
 
@@ -85,14 +84,6 @@ public class UnityNetworkServer : NetworkManager
             }
             Connections.Remove(uconn);
         }
-    }
-    public override void OnClientConnect(NetworkConnection conn)
-    {
-        base.OnClientConnect(conn);
-    }
-    public override void OnClientDisconnect(NetworkConnection conn)
-    {
-        base.OnClientDisconnect(conn);
     }
 }
 

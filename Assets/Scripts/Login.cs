@@ -4,15 +4,19 @@ using TMPro;
 using UnityEngine;
 using PlayFab;
 using PlayFab.ClientModels;
+using Mirror;
+using System;
 
 public class Login : MonoBehaviour
 {
+    PlayerController playerController;
     [SerializeField] private GameObject signInDsiplay = default;
     [SerializeField] private TMP_InputField usernameInputField = default;
     [SerializeField] private TMP_InputField passwordInputField = default;
 
     public static string SessionTicket;
-    public static string EntityID;
+    public string EntityID;
+    public string playFabID;
 
     public void CreateAccount()
     {
@@ -20,7 +24,7 @@ public class Login : MonoBehaviour
         {
             Username = usernameInputField.text,
             Password = passwordInputField.text,
-            RequireBothUsernameAndEmail = false                     
+            RequireBothUsernameAndEmail = false
         }, result =>
         {
             SessionTicket = result.SessionTicket;
@@ -38,14 +42,18 @@ public class Login : MonoBehaviour
         {
             Username = usernameInputField.text,
             Password = passwordInputField.text
-        }, result => 
+        }, result =>
         {
             SessionTicket = result.SessionTicket;
             EntityID = result.EntityToken.Entity.Id;
             signInDsiplay.SetActive(false);
-        }, error => 
+        }, error =>
         {
             Debug.Log(error.GenerateErrorReport());
         });
+    }
+
+    public void Awake()
+    {
     }
 }

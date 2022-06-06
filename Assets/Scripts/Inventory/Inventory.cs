@@ -9,17 +9,13 @@ public class Inventory : NetworkBehaviour
 {
     ServerManager serverManager;
     PlayerData playerData;
+    ItemLinker itemLinker;
 
     [SerializeField] private GameObject slotHolder;
     [SerializeField] private GameObject Header;
     [SerializeField] private InventoryItemData itemToAdd;
     [SerializeField] private InventoryItemData itemToRemove;
 
-    [SerializeField] private int amount;
-
-   // public InventoryItemData GetItem() { return itemData; }
-    public int GetAmount() { return amount; }
-    public void SetAmount(int a_stackAmount) { amount += a_stackAmount; }
 
     public List<InventoryItemData> inventory = new List<InventoryItemData>();
 
@@ -63,41 +59,85 @@ public class Inventory : NetworkBehaviour
             if (inventory[i] != null)
             {
                 slots[i].transform.GetChild(0).GetComponent<Image>().enabled = true;
-                slots[i].transform.GetChild(0).GetComponent<Image>().sprite = inventory[i].itemPrefab.GetComponent<InvImage>().itemImage;
-                slots[i].transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = GetAmount() + "";
+                slots[i].transform.GetChild(0).GetComponent<Image>().sprite = inventory[i].itemPrefab.GetComponent<ItemLinker>().GetComponent<InvImage>().itemImage;
+                slots[i].transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = inventory[i].GetAmount() + "";
             }           
         }
     }
 
-    //public InventoryItemData Contains(InventoryItemData item)
-    //{
-    //    foreach (InventoryItemData slot in inventory)
-    //    {
-    //        if (GetItem() == item)
-    //            return slot;
-    //    }
-    //    return null;
-    //}
-
-    public void Add(InventoryItemData item)
+    public InventoryItemData Contains(InventoryItemData item)
     {
-        inventory.Add(item);
-        RefreshUI();
+        for (int i = 0; i < inventory.Count; i++)
+        {
+            if (inventory[i] == item)
+                return inventory[i];
+        }                          
+        return null;
+    }
 
-        //InventoryItemData slot = Contains(item);
-        //if (slot != null)
-        //    SetAmount(1);
-        //else
-        //{
-        //    inventory.AddAdd(new InventoryItemData(item, 1))
-        //}
-        //RpcRefreshUI();
+    public bool Add(InventoryItemData item)
+    {
+        //inventory.Add(item);
+        //RefreshUI();
+        if (Contains(item) && item.isStackable)
+        {
+            Contains(item).SetAmount(1);
+        }
+        else
+        {
+            if (inventory.Count <= slots.Length)
+                inventory.Add(item);
+            else
+                return false;
+        }
+
+
+
+
+        RefreshUI();
+        return true;
     }
 
     public void Remove(InventoryItemData item)
     {
         inventory.Remove(item);
         RefreshUI();
+
+        //ItemLinker temp = Contains(item);
+        //if (temp != null)
+        //{
+        //    if (temp.GetAmount() > 1)
+        //        temp.SubAmount(1);
+        //
+        //    else
+        //    {
+        //        ItemLinker slotToRemove = new ItemLinker();
+        //
+        //        foreach (ItemLinker slot in inventory)
+        //        {
+        //            if (slot.GetItem() == item)
+        //            {
+        //                slotToRemove = slot;
+        //                break;
+        //            }
+        //        }
+        //        inventory.Remove(slotToRemove);
+        //    }
+        //}
+        //else
+        //{
+        //    return false;
+        //}
+        //RefreshUI();
+        //return true;
     }
+    
+    //public void DropItem(InventoryItemData item)
+    //{
+    //    GameObject o = Instantiate(item.itemPrefab, transform.position + Vector3.up + transform.forward, Quaternion.LookRotation(transform.forward));
+    //    ItemLinker p = o.GetComponent<ItemLinker>();
+    //
+    //    NetworkServer.Spawn(item.itemPrefab);
+    //}
 
 }

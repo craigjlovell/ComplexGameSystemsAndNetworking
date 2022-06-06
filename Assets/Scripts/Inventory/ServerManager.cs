@@ -72,7 +72,7 @@ public class ServerManager : NetworkBehaviour
 
     private void Update()
     {
-        Debug.Log(Login.EntityID);
+        //Debug.Log(Login.EntityID);
     }
 
     //public override void OnStartClient()

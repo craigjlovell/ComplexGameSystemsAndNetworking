@@ -11,7 +11,7 @@ using System;
 public class ClientStartup : MonoBehaviour
 {
 #if !UNITY_SERVER
-    Configuration test;
+
     protected UnityNetworkServer _room;
     protected UnityNetworkServer Room
     {
@@ -28,11 +28,11 @@ public class ClientStartup : MonoBehaviour
         {
             PlayFabAuthService.OnLoginSuccess += OnLoginSuccess;
 
-            UnityNetworkServer.OnClientDisconnected += OnDisconnected;
-            UnityNetworkServer.OnClientConnected += OnConnected;
+            NetworkManager.OnClientDisconnected += OnDisconnected;
+            NetworkManager.OnClientConnected += OnConnected;
 
-            NetworkClient.RegisterHandler<ShutdownMessage>(OnServerShutDown);
-            NetworkClient.RegisterHandler<MaintenanceMessage>(OnMaintenanceMessage);
+            //NetworkClient.RegisterHandler<ShutdownMessage>(OnServerShutDown);
+            //NetworkClient.RegisterHandler<MaintenanceMessage>(OnMaintenanceMessage);
         }
     }
 

@@ -7,6 +7,6 @@ public class InvItemBlocks : InventoryItemData
 {
     public void Awake()
     {
-        itemType = ItemType.BLOCKS;
+        itemType = ItemTypes.BLOCKS;
     }
 }

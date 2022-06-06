@@ -5,11 +5,17 @@ using Mirror;
 using System;
 using UnityEngine.UI;
 
+
+[Serializable]
 public class ItemLinker : NetworkBehaviour
-{
-    public InventoryItemData itemData;
+{ 
     [SerializeField] private Inventory inventoryItems;
     [SerializeField] private PlayerController player;
+
+    //public InventoryItemData itemData;
+
+    [SerializeField] public InventoryItemData itemData;
+    [SerializeField] private int stackAmount;
 
     public void Awake()
     {
@@ -26,13 +32,13 @@ public class ItemLinker : NetworkBehaviour
     {
 
         //removed nasted if 
-        if (!isServer) return;
-        //if this is just to check if its a player, better check for the tag.
-        if (!other.gameObject.GetComponent<PlayerController>() && other == other.GetComponent<CharacterController>())
-        {
-            inventoryItems = other.GetComponent<Inventory>();
-            inventoryItems.Add(itemData);
-        }
+        //if (!isServer) return;
+        ////if this is just to check if its a player, better check for the tag.
+        //if (!other.gameObject.GetComponent<PlayerController>() && other == other.GetComponent<CharacterController>())
+        //{
+        //    inventoryItems = other.GetComponent<Inventory>();
+        //    inventoryItems.Add(itemData);
+        //}
         //GiveItemToPlayer(other.GetComponent<NetworkIdentity>().connectionToClient, itemData, other.gameObject);
 
         if (isServer)
@@ -43,11 +49,7 @@ public class ItemLinker : NetworkBehaviour
                 inventoryItems.Add(itemData);
                 // to add an item to the apporiate player's PlayerData (script) via an id   
             }
-        }
-
-
-        
-
+        }     
     }
 
     [TargetRpc]
@@ -58,7 +60,10 @@ public class ItemLinker : NetworkBehaviour
         playerGameObject.GetComponent<Inventory>();
         inventoryItems.Add(data);
 
-    }
-
+    }    
     
+    public InventoryItemData GetItem() { return itemData; }
+    public int GetAmount() { return stackAmount; }
+    public void SetAmount(int a_stackAmount) { stackAmount += a_stackAmount; }
+    public void SubAmount(int a_stackAmount) { stackAmount -= a_stackAmount; }
 }

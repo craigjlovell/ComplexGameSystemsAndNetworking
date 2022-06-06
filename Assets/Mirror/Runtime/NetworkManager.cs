@@ -741,6 +741,8 @@ namespace Mirror
         // new clients will automatically load this scene.
         // Loading a scene manually won't set it.
         public static string networkSceneName { get; protected set; } = "";
+        public static Action<NetworkConnection> OnClientDisconnected { get; set; }
+        public static Action<NetworkConnection> OnClientConnected { get; set; }
 
         public static AsyncOperation loadingSceneAsync;
 

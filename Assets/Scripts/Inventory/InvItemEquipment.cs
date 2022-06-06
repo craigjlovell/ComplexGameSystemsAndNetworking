@@ -7,6 +7,6 @@ public class InvItemEquipment : InventoryItemData
 {
     public void Awake()
     {
-        itemType = ItemType.EQUIPMENT;
+        itemType = ItemTypes.EQUIPMENT;
     }
 }
