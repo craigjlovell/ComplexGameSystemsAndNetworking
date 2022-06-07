@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class ItemDragHandler : MonoBehaviour, IDragHandler, IEndDragHandler
+public class ItemDragHandler : MonoBehaviour, IDragHandler, IEndDragHandler, IDropHandler
 {
     [SerializeField] private Canvas m_canvas;
     private RectTransform m_RectTransform;
@@ -25,5 +25,9 @@ public class ItemDragHandler : MonoBehaviour, IDragHandler, IEndDragHandler
         {
             Debug.Log("DropItem");
         }
+    }
+    public void OnDrop(PointerEventData eventData)
+    {
+        Debug.Log("Droped");
     }
 }

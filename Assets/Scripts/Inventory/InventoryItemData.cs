@@ -33,9 +33,11 @@ public class InventoryItemData : ScriptableObject
     {
         quantity = a_stackAmount;
     }
-
+    
     public int GetAmount() { return quantity; }
-    public void SetAmount(int a_stackAmount) { quantity = a_stackAmount; }
+    public void AddAmount(int a_stackAmount) { quantity += a_stackAmount; }
+    public void SubAmount(int a_stackAmount) { quantity -= a_stackAmount; }
+    public void ResetAmount(int a_stackAmount) { quantity = a_stackAmount; }
 }
 
 

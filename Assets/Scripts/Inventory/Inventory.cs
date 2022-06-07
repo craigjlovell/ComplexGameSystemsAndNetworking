@@ -81,23 +81,21 @@ public class Inventory : NetworkBehaviour
         //RefreshUI();
         if (Contains(item) && item.isStackable)
         {
-            Contains(item).quantity++;
+            Contains(item).AddAmount(1);
         }
         else
         {
             if (inventory.Count <= slots.Length)
             {
                 inventory.Add(item);
-                item.SetAmount(1);
+                item.ResetAmount(1);
             }
-
             else
+            {
+                RefreshUI();
                 return false;
+            }
         }
-
-
-
-
         RefreshUI();
         return true;
     }

@@ -71,7 +71,7 @@ public class PlayerController : NetworkBehaviour
 
     public override void OnStartLocalPlayer()
     {
-        string name = "Player" + login.EntityID;
+        string name = "Player " + login.EntityID;
         CmdSetupPlayer(name);
     }
 
