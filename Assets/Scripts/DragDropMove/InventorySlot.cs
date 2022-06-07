@@ -5,23 +5,19 @@ using UnityEngine.UI;
 
 public class InventorySlot : MonoBehaviour
 {
-    public GameObject icon;
+    public GameObject slotGameobject;
 
-    public void Start()
-    {
-
-    }
     public void UpdateSlot()
     {
         if(Inventory.instance.inventory[transform.GetSiblingIndex()] != null)
         {
-            icon.transform.GetChild(0).GetComponent<Image>().sprite = Inventory.instance.inventory[transform.GetSiblingIndex()].itemPrefab.GetComponent<ItemLinker>().GetComponent<InvImage>().itemImage;
-            //Inventory.instance.inventorySlots[transform.GetSiblingIndex()].transform.GetChild(0).GetComponent<Image>().sprite = Inventory.instance.inventory[transform.GetSiblingIndex()].itemPrefab.GetComponent<ItemLinker>().GetComponent<InvImage>().itemImage;
-            icon.SetActive(true);
+            slotGameobject.GetComponent<Image>().sprite = Inventory.instance.inventory[transform.GetSiblingIndex()].itemPrefab.GetComponent<InvImage>().itemImage;
+            //Inventory.instance.slots[transform.GetSiblingIndex()].transform.GetChild(0).GetComponent<Image>().sprite = Inventory.instance.inventory[transform.GetSiblingIndex()].itemPrefab.GetComponent<ItemLinker>().GetComponent<InvImage>().itemImage;
+            slotGameobject.SetActive(true);
         }
         else
         {
-            icon.SetActive(false);
+            slotGameobject.SetActive(false);
         }
     }
 }

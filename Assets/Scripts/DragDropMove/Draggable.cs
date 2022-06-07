@@ -7,9 +7,8 @@ using UnityEngine.EventSystems;
 public class Draggable : MonoBehaviour, IPointerDownHandler, IDragHandler, IPointerUpHandler
 {
     public Transform originalParent;
-    public InventoryItemData itemData;
 
-    public bool isDrag;
+    private bool isDrag;
 
     public virtual void Awake()
     {

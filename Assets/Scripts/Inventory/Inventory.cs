@@ -5,15 +5,17 @@ using UnityEngine.UI;
 using Mirror;
 using TMPro;
 
+
 public class Inventory : NetworkBehaviour
 {
     public static Inventory instance;
-    ServerManager serverManager;
-    PlayerData playerData;
-    ItemLinker itemLinker;
 
-    [SerializeField] private GameObject slotHolder;
-    [SerializeField] private GameObject Header;
+    [SerializeField] private ServerManager serverManager;
+    [SerializeField] private PlayerData playerData;
+    [SerializeField] private InvSlot invSlot;
+
+    [SerializeField] private GameObject slotHolder; 
+    [SerializeField] private GameObject header;
     [SerializeField] private InventoryItemData itemToAdd;
     [SerializeField] private InventoryItemData itemToRemove;
 
@@ -25,25 +27,42 @@ public class Inventory : NetworkBehaviour
     // Start is called before the first frame update
     void Awake()
     {
-        serverManager = GameObject.Find("ServerManagerData").GetComponent<ServerManager>();
+        serverManager = GameObject.Find("ServerManagerData").GetComponent<ServerManager>();        
+
+        if (instance == null)
+            instance = this;
+        else if (instance != this)
+            Destroy(this);
     }
 
-    void Start()
+    public void Start()
     {
+        inventorySlots = FindObjectsOfType<InventorySlot>();
         serverManager.AddPlayerInventory(playerData);
-        inventorySlots = new InventorySlot[slotHolder.transform.childCount];
-        Header.transform.SetAsLastSibling();
         RefreshUI();
-        for (int i = 0; i < slotHolder.transform.childCount; i++)
-        {
-            if (slotHolder.transform.GetChild(i).CompareTag("Slot"))
-            {
-                inventorySlots[i].icon = slotHolder.transform.GetChild(i).gameObject;                  
-                inventorySlots[i].icon.transform.GetChild(0).GetComponent<Image>().sprite = null;      
-                inventorySlots[i].icon.transform.GetChild(0).GetComponent<Image>().enabled = false;
-                inventorySlots[i].icon.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = "";
-            }
-        }
+        //inventorySlots = new GameObject[invSlot.invSlots.Count];
+        //inventorySlots.Capacity = invSlot.numOfSlots;
+        //for (int i = 0; i < inventorySlots.Capacity - 1; i++)
+        //{
+        //    inventorySlots.Add(new InventorySlot());
+        //
+        //    // taking the value form slotinv list whichj is 25 and giving the same to the slotgameobject saying there 25 of them 
+        //    inventorySlots[i].slotGameobject = invSlot.invSlots[i];            
+        //}        
+
+        //for (int i = 0; i < invSlot.numOfSlots; i++)
+        //{       
+        //    if (slotHolder.transform.GetChild(i).CompareTag("Slot"))
+        //    {
+        //        Debug.Log("1 " + slotHolder.transform.GetChild(i).gameObject.name);
+        //        Debug.Log("2 " + inventorySlots[i].name);                
+        //        inventorySlots[i] = invSlot.invSlots[i];
+        //        Debug.Log("3 " + inventorySlots[i].name);
+        //        inventorySlots[i].transform.GetChild(0).GetComponent<Image>().sprite = null;      
+        //        inventorySlots[i].transform.GetChild(0).GetComponent<Image>().enabled = false;
+        //        inventorySlots[i].transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = "";
+        //    }
+        //}
     }
 
     // Update is called once per frame
@@ -52,19 +71,18 @@ public class Inventory : NetworkBehaviour
         
     }
 
+
     void RefreshUI()
     {
         for (int i = 0; i < inventory.Count; i++)
         {
             if (inventory[i] != null)
             {
-
                 inventorySlots[i].UpdateSlot();
-                //slots[i].GetComponent<Image>().sprite = Inventory.instance.inventory[transform.GetSiblingIndex()].itemPrefab.GetComponent<InvImage>().itemImage;
                 //Old Might be broken without below
-                //slots[i].transform.GetChild(0).GetComponent<Image>().enabled = true;
-                //slots[i].transform.GetChild(0).GetComponent<Image>().sprite = inventory[i].itemPrefab.GetComponent<ItemLinker>().GetComponent<InvImage>().itemImage;
-                //slots[i].transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = inventory[i].GetAmount() + "";
+                //inventorySlots[i].GetComponent<Image>().sprite = inventory[i].itemPrefab.GetComponent<InvImage>().itemImage;
+                inventorySlots[i].transform.GetChild(0).GetComponent<Image>().enabled = true;                
+                inventorySlots[i].transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = inventory[i].GetAmount() + "";
             }
         }
     }
@@ -78,7 +96,18 @@ public class Inventory : NetworkBehaviour
         }                          
         return null;
     }
-
+    public bool AddItem(InventoryItemData item)
+    {
+        for (int i = 0; i < inventorySlots.Length; i++)
+        {
+            if (inventory[i] == null)
+            {
+                inventory[i] = item;
+                return true;
+            }
+        }
+        return false;
+    }
     public bool Add(InventoryItemData item)
     {
         //inventory.Add(item);

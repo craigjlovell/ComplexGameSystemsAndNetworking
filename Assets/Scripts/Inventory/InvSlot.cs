@@ -10,6 +10,7 @@ public class InvSlot : MonoBehaviour
     public GameObject prefab;
 
     public Vector2 invSize;
+    public int maxNumOfSlots;
 
     [Range(0, 100)]
     public int numOfSlots = 0;
@@ -35,9 +36,10 @@ public class InvSlot : MonoBehaviour
     void Awake()
     {
         invSizeLastFrame = invSize;
-        numOfSlots = (int)invSize.x * (int)invSize.y;
+        maxNumOfSlots = (int)invSize.x * (int)invSize.y;
+        numOfSlots = maxNumOfSlots;
 
-        obj = gameObject.transform.GetComponentInChildren<GuiScale>();
+        obj = transform.parent.GetChild(1).GetComponent<GuiScale>();
 
         grid = GetComponentInParent<GridLayoutGroup>();
         grid.constraintCount = (int)invSize.y;
@@ -69,6 +71,17 @@ public class InvSlot : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        // macnumofslots is always = to row * col
+        // if the num of slots is greater than max num of slots have number of slots = max
+        if (maxNumOfSlots != (int)invSize.x * (int)invSize.y)
+        {
+            maxNumOfSlots = (int)invSize.x * (int)invSize.y;
+        }
+
+        if (numOfSlots > maxNumOfSlots)
+            numOfSlots = maxNumOfSlots;
+        
+
         obj.headerSize = editHeader;
 
         grid.cellSize = slotSize;
@@ -99,12 +112,12 @@ public class InvSlot : MonoBehaviour
 
         if (vecSlot == true)
         {
-            if (invSize.x > invSizeLastFrame.x || invSize.y > invSizeLastFrame.y )
+            if (invSize.x > invSizeLastFrame.x || invSize.y > invSizeLastFrame.y)
             {
                 AddInventorySlotsVector();
             }
 
-            if (invSize.x < invSizeLastFrame.x || invSize.y < invSizeLastFrame.y )
+            if (invSize.x < invSizeLastFrame.x || invSize.y < invSizeLastFrame.y)
             {
                 RemoveInventorySlotsVector();
             }
@@ -113,12 +126,12 @@ public class InvSlot : MonoBehaviour
         if (intSlot == true)
         {
 
-            if (numOfSlotsLastFrame < numOfSlots  )
+            if (numOfSlotsLastFrame < numOfSlots)
             {
                 AddInventorySlotsInt();
             }
 
-            if (numOfSlotsLastFrame > numOfSlots )
+            if (numOfSlotsLastFrame > numOfSlots)
             {
                 RemoveInventorySlotsInt();
             }
@@ -133,11 +146,9 @@ public class InvSlot : MonoBehaviour
 
     void AddInventorySlotsVector()
     {
-        int tempNum = numOfSlots;
-        numOfSlots = (int)invSize.x * (int)invSize.y;
-        tempNum = numOfSlots - tempNum;
+        int remainder = numOfSlots - maxNumOfSlots;
 
-        for (int x = 1; x <= tempNum; x++)
+        for (int x = 1; x <= remainder; x++)
         {
             GameObject slot = Instantiate(prefab) as GameObject;
             slot.transform.parent = this.transform;
@@ -149,9 +160,9 @@ public class InvSlot : MonoBehaviour
 
     void AddInventorySlotsInt()
     {
-        int tempNum = numOfSlots - numOfSlotsLastFrame;
+        int remainder = numOfSlots - numOfSlotsLastFrame;
 
-        for (int x = 1; x <= tempNum; x++)
+        for (int x = 1; x <= remainder; x++)
         {
             GameObject slot = Instantiate(prefab) as GameObject;
             slot.transform.parent = this.transform;
@@ -163,11 +174,9 @@ public class InvSlot : MonoBehaviour
 
     void RemoveInventorySlotsVector()
     {
-        int tempNum = numOfSlots;
-        numOfSlots = (int)invSize.x * (int)invSize.y;
-        tempNum = tempNum - numOfSlots;
+        int remainder = numOfSlots - maxNumOfSlots;
 
-        for (int x = 1; x <= tempNum; x++)
+        for (int x = 1; x <= remainder; x++)
         {
             GameObject toRemove = invSlots[invSlots.Count - 1];
 
@@ -180,9 +189,9 @@ public class InvSlot : MonoBehaviour
 
     void RemoveInventorySlotsInt()
     {
-        int tempNum = numOfSlotsLastFrame - numOfSlots;
+        int remainder = numOfSlots - numOfSlotsLastFrame;
 
-        for (int x = 1; x <= tempNum; x++)
+        for (int x = 1; x <= remainder; x++)
         {
             GameObject toRemove = invSlots[invSlots.Count - 1];
 

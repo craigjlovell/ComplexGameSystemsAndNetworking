@@ -22,7 +22,6 @@ public class PlayerController : NetworkBehaviour
 
     Animator animator;
     ServerManager serverManager;
-    public Inventory inventoryItems;
 
     public Canvas inventoryWidget;
 
@@ -35,7 +34,6 @@ public class PlayerController : NetworkBehaviour
     {
         serverManager = GameObject.Find("ServerManagerData").GetComponent<ServerManager>();        
         animator = GetComponent<Animator>();
-        inventoryItems = GetComponent<Inventory>();
         login = GameObject.Find("Login").GetComponent<Login>();
     }
 
