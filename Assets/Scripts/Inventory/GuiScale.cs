@@ -43,7 +43,7 @@ public class GuiScale : MonoBehaviour
         parentRectWidth = parentRect.GetComponent<RectTransform>().rect.size.x;
         parentRectHeight = parentRect.GetComponent<RectTransform>().rect.height;
         thisRect.sizeDelta = new Vector2(parentRectWidth, headerSize);
-        thisRect.position = new Vector2(parentRect.position.x, parentRectHeight);
+        thisRect.position = new Vector2(parentRect.position.x, parentRectHeight / 2);
 
     }
 
