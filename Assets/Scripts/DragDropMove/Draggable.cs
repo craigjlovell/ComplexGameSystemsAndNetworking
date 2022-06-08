@@ -6,8 +6,7 @@ using UnityEngine.EventSystems;
 
 public class Draggable : MonoBehaviour, IPointerDownHandler, IDragHandler, IPointerUpHandler
 {
-    public Transform originalParent;
-
+    private Transform originalParent;
     private bool isDrag;
 
     public virtual void Awake()
@@ -23,7 +22,7 @@ public class Draggable : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoin
             {
                 isDrag = true;
                 originalParent = transform.parent;
-                transform.SetParent(transform.parent.parent);
+                    transform.SetParent(transform.parent.parent);
                 GetComponent<CanvasGroup>().blocksRaycasts = false;
             }
         }

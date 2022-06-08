@@ -4,11 +4,16 @@ using UnityEngine;
 using UnityEngine.UI;
 using Mirror;
 using TMPro;
+using System;
 
 
 public class Inventory : NetworkBehaviour
 {
     public static Inventory instance;
+    private ItemSlot[] itemSlots = new ItemSlot[0];
+
+    public Action OnItemsUpdated = delegate { };
+    public ItemSlot GetSlotByIndex(int index) => itemSlots[index];
 
     [SerializeField] private ServerManager serverManager;
     [SerializeField] private PlayerData playerData;
@@ -23,11 +28,11 @@ public class Inventory : NetworkBehaviour
     public List<InventoryItemData> inventory = new List<InventoryItemData>();
 
     public InventorySlot[] inventorySlots;
-
+    
     // Start is called before the first frame update
     void Awake()
     {
-        serverManager = GameObject.Find("ServerManagerData").GetComponent<ServerManager>();        
+        serverManager = GameObject.Find("ServerManagerData").GetComponent<ServerManager>();
 
         if (instance == null)
             instance = this;
@@ -37,32 +42,35 @@ public class Inventory : NetworkBehaviour
 
     public void Start()
     {
+
+        // feed into new array temp array and flip order
         inventorySlots = FindObjectsOfType<InventorySlot>();
+        
         serverManager.AddPlayerInventory(playerData);
         RefreshUI();
-        //inventorySlots = new GameObject[invSlot.invSlots.Count];
-        //inventorySlots.Capacity = invSlot.numOfSlots;
-        //for (int i = 0; i < inventorySlots.Capacity - 1; i++)
-        //{
-        //    inventorySlots.Add(new InventorySlot());
-        //
-        //    // taking the value form slotinv list whichj is 25 and giving the same to the slotgameobject saying there 25 of them 
-        //    inventorySlots[i].slotGameobject = invSlot.invSlots[i];            
-        //}        
 
-        //for (int i = 0; i < invSlot.numOfSlots; i++)
-        //{       
-        //    if (slotHolder.transform.GetChild(i).CompareTag("Slot"))
-        //    {
-        //        Debug.Log("1 " + slotHolder.transform.GetChild(i).gameObject.name);
-        //        Debug.Log("2 " + inventorySlots[i].name);                
-        //        inventorySlots[i] = invSlot.invSlots[i];
-        //        Debug.Log("3 " + inventorySlots[i].name);
-        //        inventorySlots[i].transform.GetChild(0).GetComponent<Image>().sprite = null;      
-        //        inventorySlots[i].transform.GetChild(0).GetComponent<Image>().enabled = false;
-        //        inventorySlots[i].transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = "";
-        //    }
-        //}
+        for (int i = 0; i < inventorySlots.Length / 2; i++)
+        {
+            var tmp = inventorySlots[i];
+            inventorySlots[i] = inventorySlots[inventorySlots.Length - i - 1];
+            inventorySlots[inventorySlots.Length - i - 1] = tmp;
+        }
+
+        for (int i = 0; i < invSlot.numOfSlots; i++)
+        {       
+            if (slotHolder.transform.GetChild(i).CompareTag("Slot"))
+            {
+                Debug.Log("1 " + slotHolder.transform.GetChild(i).gameObject.name);
+                Debug.Log("2 " + inventorySlots[i].name);
+                
+                //inventorySlots[i].slotGameobject = slotHolder.transform.parent.GetChild(i).gameObject;
+                Debug.Log("3 " + inventorySlots[i].name);
+
+                //inventorySlots[i].slotGameobject.transform.GetChild(0).GetComponent<Image>().sprite = null;      
+                //inventorySlots[i].slotGameobject.transform.GetChild(0).GetComponent<Image>().enabled = false;
+                //inventorySlots[i].slotGameobject.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = "";
+            }
+        }
     }
 
     // Update is called once per frame
@@ -72,17 +80,18 @@ public class Inventory : NetworkBehaviour
     }
 
 
-    void RefreshUI()
+    public void RefreshUI()
     {
         for (int i = 0; i < inventory.Count; i++)
         {
             if (inventory[i] != null)
             {
                 inventorySlots[i].UpdateSlot();
+
                 //Old Might be broken without below
                 //inventorySlots[i].GetComponent<Image>().sprite = inventory[i].itemPrefab.GetComponent<InvImage>().itemImage;
-                inventorySlots[i].transform.GetChild(0).GetComponent<Image>().enabled = true;                
-                inventorySlots[i].transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = inventory[i].GetAmount() + "";
+                //inventorySlots[i].transform.GetChild(0).GetComponent<Image>().enabled = true;                
+                //inventorySlots[i].transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = inventory[i].GetAmount() + "";
             }
         }
     }
@@ -166,13 +175,37 @@ public class Inventory : NetworkBehaviour
         //RefreshUI();
         //return true;
     }
-    
-    //public void DropItem(InventoryItemData item)
-    //{
-    //    GameObject o = Instantiate(item.itemPrefab, transform.position + Vector3.up + transform.forward, Quaternion.LookRotation(transform.forward));
-    //    ItemLinker p = o.GetComponent<ItemLinker>();
-    //
-    //    NetworkServer.Spawn(item.itemPrefab);
-    //}
+
+    public void Swap(int indexOne, int indexTwo)
+    {
+        ItemSlot firstSlot = itemSlots[indexOne];
+        ItemSlot secondSlot = itemSlots[indexTwo];
+
+        if (firstSlot == secondSlot) { return; }
+
+        if (secondSlot.item != null)
+        {
+            if (firstSlot.item == secondSlot.item)
+            {
+                int secondSlotRemainingSpace = secondSlot.item.stackSizeMax - secondSlot.quantity;
+
+                if (firstSlot.quantity <= secondSlotRemainingSpace)
+                {
+                    itemSlots[indexTwo].quantity += firstSlot.quantity;
+
+                    itemSlots[indexOne] = new ItemSlot();
+
+                    OnItemsUpdated.Invoke();
+
+                    return;
+                }
+            }
+        }
+
+        itemSlots[indexOne] = secondSlot;
+        itemSlots[indexTwo] = firstSlot;
+
+        OnItemsUpdated.Invoke();
+    }
 
 }
