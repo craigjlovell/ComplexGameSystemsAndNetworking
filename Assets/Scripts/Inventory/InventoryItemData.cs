@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 public enum ItemTypes
 {
+    EMPTY,
     FOOD,
     BLOCKS,
     EQUIPMENT,
@@ -11,7 +12,7 @@ public enum ItemTypes
 
 public class InventoryItemData : ScriptableObject
 {
-
+    public uint index;
     public string itemID;
     public ItemTypes itemType;
     public GameObject itemPrefab;

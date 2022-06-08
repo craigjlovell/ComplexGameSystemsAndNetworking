@@ -7,7 +7,7 @@ using UnityEngine.EventSystems;
 public class Draggable : MonoBehaviour, IPointerDownHandler, IDragHandler, IPointerUpHandler
 {
     private Transform originalParent;
-    private bool isDrag;
+    private bool isDrag = false;
 
     public virtual void Awake()
     {
@@ -16,13 +16,21 @@ public class Draggable : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoin
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        if(Inventory.instance.inventory[transform.parent.GetSiblingIndex()] != null)
+        Debug.Log(transform.parent.GetSiblingIndex());
+
+        InventoryItemData item = null;
+
+        foreach (InventoryItemData data in Inventory.instance.inventory)
+            if (data.index == transform.parent.GetSiblingIndex())
+                item = data;
+
+        if(item != null)
         {
             if(eventData.button == PointerEventData.InputButton.Left)
             {
                 isDrag = true;
-                originalParent = transform.parent;
-                    transform.SetParent(transform.parent.parent);
+                //originalParent = transform.parent;
+                //transform.SetParent(transform.parent.parent);
                 GetComponent<CanvasGroup>().blocksRaycasts = false;
             }
         }
@@ -30,9 +38,16 @@ public class Draggable : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoin
 
     public void OnDrag(PointerEventData eventData)
     {
-        if(Inventory.instance.inventory[transform.parent.GetSiblingIndex()] != null && eventData.button == PointerEventData.InputButton.Left)
+        if (isDrag)
         {
-            transform.position = Input.mousePosition;
+            InventoryItemData item = null;
+
+            foreach (InventoryItemData data in Inventory.instance.inventory)
+                if (data.index == transform.parent.GetSiblingIndex())
+                    item = data;
+
+            if (item != null && eventData.button == PointerEventData.InputButton.Left)
+                transform.position = Input.mousePosition;
         }
     }
 
@@ -41,7 +56,7 @@ public class Draggable : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoin
         if(eventData.button == PointerEventData.InputButton.Left)
         {
             isDrag = false;
-            transform.SetParent(originalParent);
+            //transform.SetParent(originalParent);
             transform.localPosition = Vector3.zero;
             GetComponent<CanvasGroup>().blocksRaycasts = true;
         }

@@ -8,13 +8,13 @@ public class InventorySlot : MonoBehaviour, IDropHandler//, IPointerDownHandler,
 {
     public GameObject slotGameobject;
 
-    public void UpdateSlot()
+    public void UpdateSlot(InventoryItemData data)
     {
-        if(Inventory.instance.inventory[transform.parent.GetSiblingIndex()] != null)
+        if (data != null)
         {
-            slotGameobject.GetComponent<Image>().sprite = Inventory.instance.inventory[transform.parent.GetSiblingIndex()].itemPrefab.GetComponent<InvImage>().itemImage;
-            slotGameobject.GetComponent<Image>().enabled = true;                
-            slotGameobject.GetComponentInChildren<TextMeshProUGUI>().text = Inventory.instance.inventory[transform.parent.GetSiblingIndex()].GetAmount() + "";
+            slotGameobject.GetComponent<Image>().sprite = data.itemPrefab.GetComponent<InvImage>().itemImage;
+            slotGameobject.GetComponent<Image>().enabled = true;
+            slotGameobject.GetComponentInChildren<TextMeshProUGUI>().text = data.GetAmount() + "";
         }
         else
         {
@@ -22,19 +22,38 @@ public class InventorySlot : MonoBehaviour, IDropHandler//, IPointerDownHandler,
             slotGameobject.GetComponent<Image>().enabled = false;
             slotGameobject.GetComponentInChildren<TextMeshProUGUI>().text = "";
         }
-    }    
+    }
 
     public void OnDrop(PointerEventData eventData)
     {
-        InventoryItemData dropeditem = Inventory.instance.inventory[eventData.pointerDrag.GetComponent<Draggable>().transform.parent.GetSiblingIndex()];
+        Debug.Log($"From: {eventData.pointerDrag.transform.parent.GetSiblingIndex()}");
+
+        InventoryItemData data = null;
+
+        foreach (InventoryItemData item in Inventory.instance.inventory)
+            if (item.index == eventData.pointerDrag.transform.parent.GetSiblingIndex())
+            {
+                data = item;
+                Debug.Log(data);
+            }
+
+        InventoryItemData droppedItem = data;
         if (eventData.pointerDrag.transform.parent.name == gameObject.name)
         {
             return;
         }
-        if(Inventory.instance.inventory[transform.parent.GetSiblingIndex()] == null)
+        else
         {
-            Inventory.instance.inventory[transform.parent.GetSiblingIndex()] = dropeditem;
-            Inventory.instance.inventory[eventData.pointerDrag.GetComponent<Draggable>().transform.parent.GetSiblingIndex()] = null;
+            uint dropIndex = (uint)Mathf.Clamp(transform.GetSiblingIndex(), 0, int.MaxValue);
+
+            Debug.Log($"Drop Index: {dropIndex}");
+
+            foreach (InventoryItemData item in Inventory.instance.inventory)
+                if (item.index == dropIndex)
+                    return;
+
+            droppedItem.index = dropIndex;
+
             Inventory.instance.RefreshUI();
         }
     }

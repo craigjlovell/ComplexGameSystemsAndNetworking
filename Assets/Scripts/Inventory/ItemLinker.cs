@@ -14,16 +14,6 @@ public class ItemLinker : NetworkBehaviour
     [SerializeField] public InventoryItemData itemData;
     public InventoryItemData GetItem() { return itemData; }
 
-    public void Awake()
-    {
-
-    }
-
-    private void Update()
-    {
-        
-    }
-
     //Todo send command to server that items been added to a specific player 
     public void OnTriggerEnter(Collider other)
     {

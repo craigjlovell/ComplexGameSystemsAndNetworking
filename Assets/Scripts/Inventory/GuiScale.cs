@@ -25,7 +25,7 @@ public class GuiScale : MonoBehaviour
     {        
         parentRect = transform.parent.GetChild(0).GetComponent<InvSlot>().GetComponent<RectTransform>();
         thisRect = GetComponent<RectTransform>();
-        thisRect.anchoredPosition = Vector2.zero;
+        //thisRect.anchoredPosition = Vector2.zero;
     }
 
     
@@ -33,7 +33,8 @@ public class GuiScale : MonoBehaviour
     void Update()
     {
         //Debug.Log(parentRect.GetComponent<RectTransform>().rect.size.x);
-        ReSize();
+        if(thisRect.GetComponent<RectTransform>().rect.width != parentRect.GetComponent<RectTransform>().rect.width)
+            ReSize();
     }
     
     public void ReSize()
@@ -42,7 +43,8 @@ public class GuiScale : MonoBehaviour
         parentRectWidth = parentRect.GetComponent<RectTransform>().rect.size.x;
         parentRectHeight = parentRect.GetComponent<RectTransform>().rect.height;
         thisRect.sizeDelta = new Vector2(parentRectWidth, headerSize);
-        
+        thisRect.position = new Vector2(parentRect.position.x, parentRectHeight);
+
     }
 
 

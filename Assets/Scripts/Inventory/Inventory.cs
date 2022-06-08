@@ -19,7 +19,7 @@ public class Inventory : NetworkBehaviour
     [SerializeField] private PlayerData playerData;
     [SerializeField] private InvSlot invSlot;
 
-    [SerializeField] private GameObject slotHolder; 
+    [SerializeField] private GameObject slotHolder;
     [SerializeField] private GameObject header;
     [SerializeField] private InventoryItemData itemToAdd;
     [SerializeField] private InventoryItemData itemToRemove;
@@ -28,7 +28,7 @@ public class Inventory : NetworkBehaviour
     public List<InventoryItemData> inventory = new List<InventoryItemData>();
 
     public InventorySlot[] inventorySlots;
-    
+
     // Start is called before the first frame update
     void Awake()
     {
@@ -45,7 +45,7 @@ public class Inventory : NetworkBehaviour
 
         // feed into new array temp array and flip order
         inventorySlots = FindObjectsOfType<InventorySlot>();
-        
+
         serverManager.AddPlayerInventory(playerData);
         RefreshUI();
 
@@ -55,80 +55,76 @@ public class Inventory : NetworkBehaviour
             inventorySlots[i] = inventorySlots[inventorySlots.Length - i - 1];
             inventorySlots[inventorySlots.Length - i - 1] = tmp;
         }
-
-        for (int i = 0; i < invSlot.numOfSlots; i++)
-        {       
-            if (slotHolder.transform.GetChild(i).CompareTag("Slot"))
-            {
-                Debug.Log("1 " + slotHolder.transform.GetChild(i).gameObject.name);
-                Debug.Log("2 " + inventorySlots[i].name);
-                
-                //inventorySlots[i].slotGameobject = slotHolder.transform.parent.GetChild(i).gameObject;
-                Debug.Log("3 " + inventorySlots[i].name);
-
-                //inventorySlots[i].slotGameobject.transform.GetChild(0).GetComponent<Image>().sprite = null;      
-                //inventorySlots[i].slotGameobject.transform.GetChild(0).GetComponent<Image>().enabled = false;
-                //inventorySlots[i].slotGameobject.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = "";
-            }
-        }
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
 
     public void RefreshUI()
     {
-        for (int i = 0; i < inventory.Count; i++)
-        {
-            if (inventory[i] != null)
-            {
-                inventorySlots[i].UpdateSlot();
-
-                //Old Might be broken without below
-                //inventorySlots[i].GetComponent<Image>().sprite = inventory[i].itemPrefab.GetComponent<InvImage>().itemImage;
-                //inventorySlots[i].transform.GetChild(0).GetComponent<Image>().enabled = true;                
-                //inventorySlots[i].transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = inventory[i].GetAmount() + "";
-            }
-        }
-    }
-
-    public InventoryItemData Contains(InventoryItemData item)
-    {
-        for (int i = 0; i < inventory.Count; i++)
-        {
-            if (inventory[i] == item)
-                return inventory[i];
-        }                          
-        return null;
-    }
-    public bool AddItem(InventoryItemData item)
-    {
         for (int i = 0; i < inventorySlots.Length; i++)
         {
-            if (inventory[i] == null)
-            {
-                inventory[i] = item;
-                return true;
-            }
+            InventoryItemData data = null;
+
+            foreach (InventoryItemData item in inventory)
+                if (item.index == i)
+                    data = item;
+
+            inventorySlots[i].UpdateSlot(data);
         }
-        return false;
     }
+
+    //public InventoryItemData Contains(InventoryItemData item)
+    //{
+    //    for (int i = 0; i < inventory.Count; i++)
+    //    {
+    //        if (inventory[i] == item)
+    //            return inventory[i];
+    //    }                          
+    //    return null;
+    //}
+
     public bool Add(InventoryItemData item)
     {
         //inventory.Add(item);
         //RefreshUI();
-        if (Contains(item) && item.isStackable)
+
+        if (inventory.Contains(item) && item.isStackable)
         {
-            Contains(item).AddAmount(1);
+            item.AddAmount(1);
         }
         else
         {
-            if (inventory.Count <= inventorySlots.Length)
+            if (inventory.Count < inventorySlots.Length)
             {
+                int newIndex = 0;
+
+                for (int i = 0; i < inventory.Count; i++)
+                {
+                    bool indexTaken = false;
+
+                    foreach (InventoryItemData data in inventory)
+                    {
+                        if (data.index == i)
+                        {
+                            indexTaken = true;
+                            break;
+                        }
+                    }
+
+                    if (!indexTaken)
+                    {
+                        newIndex = i;
+                        break;
+                    }
+                }
+
+                item.index = (uint)Mathf.Clamp(newIndex, 0, int.MaxValue);
+
                 inventory.Add(item);
                 item.ResetAmount(1);
             }
@@ -137,6 +133,7 @@ public class Inventory : NetworkBehaviour
                 RefreshUI();
                 return false;
             }
+
         }
         RefreshUI();
         return true;
