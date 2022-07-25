@@ -103,14 +103,14 @@ public class Inventory : NetworkBehaviour
             {
                 int newIndex = 0;
 
-                for (int i = 0; i < inventory.Count; i++)
+                for (int i = 0; i <= inventory.Count; i++)
                 {
                     bool indexTaken = false;
 
                     foreach (InventoryItemData data in inventory)
                     {
                         if (data.index == i)
-                        {
+                        {   
                             indexTaken = true;
                             break;
                         }

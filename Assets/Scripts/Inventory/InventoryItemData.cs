@@ -28,6 +28,7 @@ public class InventoryItemData : ScriptableObject
     public InventoryItemData()
     {
         quantity = 0;
+        index = 0;
     }
 
     public InventoryItemData(int a_stackAmount)
