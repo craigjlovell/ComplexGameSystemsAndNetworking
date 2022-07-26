@@ -172,24 +172,9 @@ public class InvSlot : MonoBehaviour
         grid.constraintCount = (int)invSize.y;
     }
 
-    void RemoveInventorySlotsVector()
-    {
-        int remainder = numOfSlots - maxNumOfSlots;
-
-        for (int x = 1; x <= remainder; x++)
-        {
-            GameObject toRemove = invSlots[invSlots.Count - 1];
-
-            invSlots.Remove(toRemove);
-            Destroy(toRemove);
-        }
-        numOfSlots = invSlots.Count;
-        grid.constraintCount = (int)invSize.y;
-    }
-
     void RemoveInventorySlotsInt()
     {
-        int remainder = numOfSlots - numOfSlotsLastFrame;
+        int remainder = numOfSlotsLastFrame - numOfSlots;
 
         for (int x = 1; x <= remainder; x++)
         {
@@ -201,6 +186,22 @@ public class InvSlot : MonoBehaviour
         numOfSlots = invSlots.Count;
         grid.constraintCount = (int)invSize.y;
     }
+
+    void RemoveInventorySlotsVector()
+    {
+        int remainder = maxNumOfSlots - numOfSlots;
+
+        for (int x = 1; x <= remainder; x++)
+        {
+            GameObject toRemove = invSlots[invSlots.Count - 1];
+
+            invSlots.Remove(toRemove);
+            Destroy(toRemove);
+        }
+        numOfSlots = invSlots.Count;
+        grid.constraintCount = (int)invSize.y;
+    }
+
 }
 
 

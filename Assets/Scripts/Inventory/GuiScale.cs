@@ -33,10 +33,8 @@ public class GuiScale : MonoBehaviour
     void Update()
     {
         //Debug.Log(parentRect.GetComponent<RectTransform>().rect.size.x);
-        if(thisRect.GetComponent<RectTransform>().rect.width != parentRect.GetComponent<RectTransform>().rect.width)
+        if(thisRect.GetComponent<RectTransform>().rect.width != parentRect.GetComponent<RectTransform>().rect.width || thisRect.localPosition != new Vector3(0,parentRect.GetComponent<RectTransform>().rect.height / 2))
             ReSize();
-
-
     }
     
     public void ReSize()
@@ -45,7 +43,7 @@ public class GuiScale : MonoBehaviour
         parentRectWidth = parentRect.GetComponent<RectTransform>().rect.size.x;
         parentRectHeight = parentRect.GetComponent<RectTransform>().rect.height;
         thisRect.sizeDelta = new Vector2(parentRectWidth, headerSize);
-        thisRect.position = new Vector2(parentRect.position.x, parentRectHeight);
+        thisRect.localPosition = new Vector2(0, parentRectHeight/ 2);
 
     }
 

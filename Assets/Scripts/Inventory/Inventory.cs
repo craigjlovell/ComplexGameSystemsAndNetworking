@@ -139,38 +139,36 @@ public class Inventory : NetworkBehaviour
         return true;
     }
 
-    public void Remove(InventoryItemData item)
+    public bool Remove(InventoryItemData item)
     {
-        inventory.Remove(item);
+        InventoryItemData temp = item;
+        if (inventory.Contains(item) != null)
+        {
+            if (temp.GetAmount() > 1)
+                temp.SubAmount(1);
+        
+            else
+            {
+                InventoryItemData slotToRemove = new InventoryItemData();
+        
+                foreach (InventoryItemData slot in inventory)
+                {
+                    if (slot.index == item.index)
+                    {
+                        slotToRemove = slot;
+                        break;
+                    }
+                }
+                inventory.Remove(slotToRemove);
+            }
+        }
+        else
+        {
+            RefreshUI();
+            return false;
+        }
         RefreshUI();
-
-        //ItemLinker temp = Contains(item);
-        //if (temp != null)
-        //{
-        //    if (temp.GetAmount() > 1)
-        //        temp.SubAmount(1);
-        //
-        //    else
-        //    {
-        //        ItemLinker slotToRemove = new ItemLinker();
-        //
-        //        foreach (ItemLinker slot in inventory)
-        //        {
-        //            if (slot.GetItem() == item)
-        //            {
-        //                slotToRemove = slot;
-        //                break;
-        //            }
-        //        }
-        //        inventory.Remove(slotToRemove);
-        //    }
-        //}
-        //else
-        //{
-        //    return false;
-        //}
-        //RefreshUI();
-        //return true;
+        return true;
     }
 
     public void Swap(int indexOne, int indexTwo)
