@@ -9,7 +9,7 @@ using System;
 
 public class Inventory : NetworkBehaviour
 {
-    public static Inventory instance;
+    public Inventory instance;
     private ItemSlot[] itemSlots = new ItemSlot[0];
 
     public Action OnItemsUpdated = delegate { };
@@ -17,12 +17,6 @@ public class Inventory : NetworkBehaviour
 
     [SerializeField] private ServerManager serverManager;
     [SerializeField] private PlayerData playerData;
-    [SerializeField] private InvSlot invSlot;
-
-    [SerializeField] private GameObject slotHolder;
-    [SerializeField] private GameObject header;
-    [SerializeField] private InventoryItemData itemToAdd;
-    [SerializeField] private InventoryItemData itemToRemove;
 
 
     public List<InventoryItemData> inventory = new List<InventoryItemData>();
@@ -47,7 +41,7 @@ public class Inventory : NetworkBehaviour
         inventorySlots = FindObjectsOfType<InventorySlot>();
 
         serverManager.AddPlayerInventory(playerData);
-        RefreshUI();
+        CMDRefreshUI();
 
         for (int i = 0; i < inventorySlots.Length / 2; i++)
         {
@@ -60,10 +54,12 @@ public class Inventory : NetworkBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        if (!isLocalPlayer)
+            return;
+        CMDRefreshUI();
     }
 
-
+    [ClientRpc]
     public void RefreshUI()
     {
         for (int i = 0; i < inventorySlots.Length; i++)
@@ -78,6 +74,17 @@ public class Inventory : NetworkBehaviour
         }
     }
 
+    [Command]
+    public void CMDRefreshUI()
+    {
+        RefreshUI();
+    }
+    [ClientCallback]
+    public void CcbRefreshUI()
+    {
+        RefreshUI();
+    }
+
     //public InventoryItemData Contains(InventoryItemData item)
     //{
     //    for (int i = 0; i < inventory.Count; i++)
@@ -90,8 +97,6 @@ public class Inventory : NetworkBehaviour
 
     public bool Add(InventoryItemData item)
     {
-        //inventory.Add(item);
-        //RefreshUI();
 
         if (inventory.Contains(item) && item.isStackable)
         {
@@ -130,12 +135,12 @@ public class Inventory : NetworkBehaviour
             }
             else
             {
-                RefreshUI();
+                CMDRefreshUI();
                 return false;
             }
 
         }
-        RefreshUI();
+        CMDRefreshUI();
         return true;
     }
 
@@ -202,5 +207,101 @@ public class Inventory : NetworkBehaviour
 
         OnItemsUpdated.Invoke();
     }
+
+    //public void MAdd(InventoryItemData item)
+    //{
+
+    //    if (inventory.Contains(item) && item.isStackable)
+    //    {
+    //        item.AddAmount(1);
+    //    }
+    //    else
+    //    {
+    //        if (inventory.Count < inventorySlots.Length)
+    //        {
+    //            int newIndex = 0;
+
+    //            for (int i = 0; i <= inventory.Count; i++)
+    //            {
+    //                bool indexTaken = false;
+
+    //                foreach (InventoryItemData data in inventory)
+    //                {
+    //                    if (data.index == i)
+    //                    {
+    //                        indexTaken = true;
+    //                        break;
+    //                    }
+    //                }
+
+    //                if (!indexTaken)
+    //                {
+    //                    newIndex = i;
+    //                    break;
+    //                }
+    //            }
+
+    //            item.index = (uint)Mathf.Clamp(newIndex, 0, int.MaxValue);
+
+    //            inventory.Add(item);
+    //            item.ResetAmount(1);
+    //        }
+    //        else
+    //        {
+    //            CMDRefreshUI();
+    //        }
+
+    //    }
+    //    CMDRefreshUI();
+    //}
+
+    //[ClientRpc]
+    //public void MRemove(InventoryItemData item)
+    //{
+    //    InventoryItemData temp = item;
+    //    if (inventory.Contains(item) != null)
+    //    {
+    //        if (temp.GetAmount() > 1)
+    //            temp.SubAmount(1);
+
+    //        else
+    //        {
+    //            InventoryItemData slotToRemove = new InventoryItemData();
+
+    //            foreach (InventoryItemData slot in inventory)
+    //            {
+    //                if (slot.index == item.index)
+    //                {
+    //                    slotToRemove = slot;
+    //                    break;
+    //                }
+    //            }
+    //            inventory.Remove(slotToRemove);
+    //        }
+    //    }
+    //    else
+    //    {
+    //        CMDRefreshUI();
+    //    }
+    //    CMDRefreshUI();
+    //}
+
+    //[Command]
+    //public void CmdRem(InventoryItemData item)
+    //{
+    //    MRemove(item);
+    //}
+
+    //[ClientRpc]
+    //public void rpcadd(InventoryItemData item)
+    //{
+    //    MAdd(item);
+    //}
+
+    //[Command]
+    //public void CmdAdd(InventoryItemData item)
+    //{
+    //    rpcadd(item);
+    //}
 
 }

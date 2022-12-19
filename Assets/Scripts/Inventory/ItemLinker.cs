@@ -15,12 +15,13 @@ public class ItemLinker : NetworkBehaviour
     public InventoryItemData GetItem() { return itemData; }
 
     //Todo send command to server that items been added to a specific player 
+
     public void OnTriggerEnter(Collider other)
     {
         player = other.gameObject.GetComponent<PlayerController>();
 
 
-        if (player == other.gameObject.GetComponent<PlayerController>() && other == other.GetComponent<CharacterController>())
+        if (player == other.gameObject.GetComponent<PlayerController>())
         {
             inventoryItems = other.GetComponent<Inventory>();
             inventoryItems.Add(GetItem());

@@ -3,8 +3,9 @@ using UnityEngine.EventSystems;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using Mirror;
 
-public class InventorySlot : MonoBehaviour, IDropHandler//, IPointerDownHandler, IDragHandler, IPointerUpHandler
+public class InventorySlot : Inventory, IDropHandler//, IPointerDownHandler, IDragHandler, IPointerUpHandler
 {
     public GameObject slotGameobject;
 
@@ -30,7 +31,7 @@ public class InventorySlot : MonoBehaviour, IDropHandler//, IPointerDownHandler,
 
         InventoryItemData data = null;
 
-        foreach (InventoryItemData item in Inventory.instance.inventory)
+        foreach (InventoryItemData item in instance.inventory)
             if (item.index == eventData.pointerDrag.transform.parent.GetSiblingIndex())
             {
                 data = item;
@@ -48,13 +49,13 @@ public class InventorySlot : MonoBehaviour, IDropHandler//, IPointerDownHandler,
 
             Debug.Log($"Drop Index: {dropIndex}");
 
-            foreach (InventoryItemData item in Inventory.instance.inventory)
+            foreach (InventoryItemData item in instance.inventory)
                 if (item.index == dropIndex)
                     return;
 
             droppedItem.index = dropIndex;
 
-            Inventory.instance.RefreshUI();
+            instance.CMDRefreshUI();
         }
     }
 

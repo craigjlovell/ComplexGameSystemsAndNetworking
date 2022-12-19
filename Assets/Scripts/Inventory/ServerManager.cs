@@ -26,6 +26,10 @@ public class ServerManager : NetworkBehaviour
 
     public void AddPlayer(PlayerController player)
     {
+
+        if (!player.gameObject.GetComponent<Inventory>() && !players[0])
+            Debug.LogError("Client Inventory does not exist");
+
         players.Add(player);
         SetPlayersColors();
     }
@@ -33,6 +37,8 @@ public class ServerManager : NetworkBehaviour
     public void RemovePlayer(PlayerController player)
     {
         players.Remove(player);
+        //players.Sort();
+        players.Capacity--;
     }
 
     public void AddPlayerInventory(PlayerData data)
@@ -65,21 +71,22 @@ public class ServerManager : NetworkBehaviour
         base.OnStopClient();
     }
 
-    public override void OnStartClient()
-    {
-        base.OnStartClient();
-    }
+    //public override void OnStartClient()
+    //{
+    //    base.OnStartClient();
+    //}
 
     private void Update()
     {
         //Debug.Log(Login.EntityID);
     }
 
-    //public override void OnStartClient()
-    //{
-    //    for (int i = 0; i < players.Count; i++)
-    //    {
-    //        players[i].inventoryWidget = players[i].transform.GetChild(2).gameObject.GetComponent<Canvas>();
-    //    }
-    //}
+    public override void OnStartClient()
+    {
+        for (int i = 0; i < players.Count; i++)
+        {
+            players[i].inventoryWidget = players[i].transform.GetChild(2).gameObject.GetComponent<Canvas>();
+        }
+        base.OnStartClient();
+    }
 }

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class Draggable : MonoBehaviour, IPointerDownHandler, IDragHandler, IPointerUpHandler
+public class Draggable : Inventory, IPointerDownHandler, IDragHandler, IPointerUpHandler
 {
     private Transform originalParent;
     private bool isDrag = false;
@@ -20,7 +20,7 @@ public class Draggable : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoin
 
         InventoryItemData item = null;
 
-        foreach (InventoryItemData data in Inventory.instance.inventory)
+        foreach (InventoryItemData data in instance.inventory)
             if (data.index == transform.parent.GetSiblingIndex())
                 item = data;
 
@@ -42,7 +42,7 @@ public class Draggable : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoin
         {
             InventoryItemData item = null;
 
-            foreach (InventoryItemData data in Inventory.instance.inventory)
+            foreach (InventoryItemData data in instance.inventory)
                 if (data.index == transform.parent.GetSiblingIndex())
                     item = data;
 

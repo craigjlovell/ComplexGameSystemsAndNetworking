@@ -9,6 +9,7 @@ using PlayFab.ClientModels;
 
 public class PlayerController : NetworkBehaviour
 {
+    public Inventory inventory;
     public TextMesh playerNameText;
     public GameObject floatingInfo;
 
@@ -39,6 +40,7 @@ public class PlayerController : NetworkBehaviour
 
     void Start()
     {
+        inventory = GetComponent<Inventory>();
         serverManager.AddPlayer(this);
         id = GetComponent<NetworkIdentity>().netId;
         //MyPlayfabID = login.EntityID;
@@ -63,6 +65,7 @@ public class PlayerController : NetworkBehaviour
         }
         else if (Input.GetKeyDown(KeyCode.Tab) && inventoryWidget.enabled == false)
         {
+            inventory.CcbRefreshUI();
             inventoryWidget.enabled = true;
         }
     }
@@ -107,5 +110,7 @@ public class PlayerController : NetworkBehaviour
         transform.GetChild(0).GetChild(1).GetComponentInChildren<Renderer>().material.color = col;
         transform.GetChild(0).GetChild(2).GetComponentInChildren<Renderer>().material.color = col;        
     }
+
+
     
 }
