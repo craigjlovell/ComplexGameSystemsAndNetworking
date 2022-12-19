@@ -79,7 +79,7 @@ public class Inventory : NetworkBehaviour
     {
         RefreshUI();
     }
-    [ClientCallback]
+    [TargetRpc]
     public void CcbRefreshUI()
     {
         RefreshUI();
